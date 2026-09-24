@@ -1,18 +1,15 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 import PublicationRow from '../components/PublicationRow.astro';
+import { isLeadAuthor } from '../lib/format';
 
 const SELF = 'Thomas Konstantinovsky';
 const profile = await getEntry('profile', 'profile');
 const all = await getCollection('publications');
 type Pub = (typeof all)[number];
 const byYear = (a: Pub, b: Pub) => b.data.year - a.data.year || a.data.title.localeCompare(b.data.title);
-const leadAuthor = (p: Pub) => {
-  const i = p.data.authors.indexOf(SELF);
-  return i === 0 || (i === 1 && p.data.equalContribution);
-};
+const leadAuthor = (p: Pub) => isLeadAuthor(p.data.authors, p.data.equalContribution, p.data.equalContributors, SELF);
 const published = all.filter((p) => p.data.status !== 'in-preparation');
 const first = published.filter((p) => leadAuthor(p) && p.data.year >= 2022).sort(byYear);
 const earlier = published.filter((p) => leadAuthor(p) && p.data.year < 2022).sort(byYear);
@@ -52,27 +49,39 @@ const jsonLd = {
     {profile?.data.links.scholar && <>{' '}Full list on <a href={profile.data.links.scholar} rel="noopener">Google Scholar</a>.</>}
   </p>
 
-  <SectionHeading title="First-author papers" />
-  {first.map((pub) => <PublicationRow pub={pub} />)}
+  <section class="group">
+    <h2><span>First-author papers</span><span class="mono count">{first.length}</span></h2>
+    {first.map((pub) => <PublicationRow pub={pub} />)}
+  </section>
 
-  <SectionHeading title="Co-authored papers" />
-  {coauthored.map((pub) => <PublicationRow pub={pub} />)}
+  <section class="group">
+    <h2><span>Co-authored papers</span><span class="mono count">{coauthored.length}</span></h2>
+    {coauthored.map((pub) => <PublicationRow pub={pub} />)}
+  </section>
 
   {earlier.length > 0 && (
-    <>
-      <SectionHeading title="Earlier work" />
+    <section class="group">
+      <h2><span>Earlier work</span><span class="mono count">{earlier.length}</span></h2>
       {earlier.map((pub) => <PublicationRow pub={pub} />)}
-    </>
+    </section>
   )}
 
   {inPrep.length > 0 && (
-    <>
-      <SectionHeading title="In preparation" />
+    <section class="group">
+      <h2><span>In preparation</span><span class="mono count">{inPrep.length}</span></h2>
       {inPrep.map((pub) => <PublicationRow pub={pub} />)}
-    </>
+    </section>
   )}
 </BaseLayout>
 
 <style>
-  .lede { color: var(--muted); margin-bottom: var(--space-4); }
+  .lede { color: var(--muted); margin-bottom: var(--space-6); }
+  .group { margin-top: var(--space-7); }
+  .group h2 {
+    display: flex; align-items: baseline; gap: var(--space-3);
+    font-size: var(--text-lg); font-variation-settings: 'SOFT' 100, 'opsz' 24;
+    padding-bottom: var(--space-3); margin-bottom: var(--space-1);
+    border-bottom: 2px solid var(--ink);
+  }
+  .count { color: var(--muted); }
 </style>

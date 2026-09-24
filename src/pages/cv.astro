@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import TimelineItem from '../components/TimelineItem.astro';
 import PublicationItem from '../components/PublicationItem.astro';
-import { byDateDesc, byEndDesc, formatDateRange, formatMonthYear } from '../lib/format';
+import { byDateDesc, byEndDesc, formatDateRange, formatMonthYear, isLeadAuthor } from '../lib/format';
 import { withBase } from '../lib/url';
 
 const SELF = 'Thomas Konstantinovsky';
@@ -22,10 +22,7 @@ const service = (await getCollection('service')).sort(byEndDesc);
 const pubs = await getCollection('publications');
 type Pub = (typeof pubs)[number];
 const byYear = (a: Pub, b: Pub) => b.data.year - a.data.year || a.data.title.localeCompare(b.data.title);
-const leadAuthor = (p: Pub) => {
-  const i = p.data.authors.indexOf(SELF);
-  return i === 0 || (i === 1 && p.data.equalContribution);
-};
+const leadAuthor = (p: Pub) => isLeadAuthor(p.data.authors, p.data.equalContribution, p.data.equalContributors, SELF);
 const published = pubs.filter((p) => p.data.status !== 'in-preparation');
 const firstAuthor = published.filter(leadAuthor).sort(byYear);
 const coauthored = published.filter((p) => !leadAuthor(p)).sort(byYear);

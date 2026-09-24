@@ -27,7 +27,7 @@ const statusLabel = d.status === 'preprint' ? 'Preprint' : undefined;
     <p class="authors">
       {authors.map((a, i) => (
         <>
-          {a.self ? <strong>{a.name}</strong> : a.name}{d.equalContribution && i < 2 ? <sup title="Equal contribution">†</sup> : null}{i < authors.length - 1 ? ', ' : ''}
+          {a.self ? <strong>{a.name}</strong> : a.name}{d.equalContribution && i < d.equalContributors ? <sup title="Equal contribution">†</sup> : null}{i < authors.length - 1 ? ', ' : ''}
         </>
       ))}
     </p>

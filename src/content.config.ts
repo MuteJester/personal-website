@@ -83,6 +83,7 @@ const publications = defineCollection({
     type: z.enum(['journal', 'conference', 'preprint', 'other']),
     status: z.enum(['published', 'preprint', 'in-preparation']).default('published'),
     equalContribution: z.boolean().default(false),
+    equalContributors: z.number().int().min(2).default(2), // how many leading authors share first authorship
     doi: z.string().optional(),
     arxiv: z.string().optional(),
     pmid: z.string().optional(),

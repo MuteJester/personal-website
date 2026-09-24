@@ -4,4 +4,6 @@ venue: Epigenetics & Chromatin
 venueShort: Epigenetics & Chromatin
 year: 2022
 type: journal
+equalContribution: true
+equalContributors: 3
 doi: 10.1186/s13072-022-00441-y

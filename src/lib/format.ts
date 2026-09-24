@@ -31,3 +31,10 @@ export function byEndDesc<T extends { data: { start: Date; end?: Date } }>(a: T,
 export const doiUrl = (doi: string) => `https://doi.org/${doi}`;
 export const arxivUrl = (id: string) => `https://arxiv.org/abs/${id}`;
 export const pubmedUrl = (pmid: string) => `https://pubmed.ncbi.nlm.nih.gov/${pmid}/`;
+
+/** True when `self` is a (joint) first author: index 0, or within the first `equalContributors` when marked. */
+export function isLeadAuthor(authors: string[], equalContribution: boolean, equalContributors = 2, self = 'Thomas Konstantinovsky'): boolean {
+  const i = authors.indexOf(self);
+  if (i < 0) return false;
+  return i === 0 || (equalContribution && i < equalContributors);
+}

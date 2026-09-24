@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { arxivUrl, byEndDesc, doiUrl, formatDateRange, formatMonthYear, pubmedUrl, splitAuthors } from './format';
+import { arxivUrl, byEndDesc, doiUrl, formatDateRange, formatMonthYear, isLeadAuthor, pubmedUrl, splitAuthors } from './format';
 
 const d = (s: string) => new Date(s);
 
@@ -50,5 +50,24 @@ describe('id urls', () => {
     expect(doiUrl('10.1093/nar/gkaf651')).toBe('https://doi.org/10.1093/nar/gkaf651');
     expect(arxivUrl('2604.26190')).toBe('https://arxiv.org/abs/2604.26190');
     expect(pubmedUrl('40650972')).toBe('https://pubmed.ncbi.nlm.nih.gov/40650972/');
+  });
+});
+
+describe('isLeadAuthor', () => {
+  const me = 'Thomas Konstantinovsky';
+  it('is true for the first author', () => {
+    expect(isLeadAuthor([me, 'B'], false)).toBe(true);
+  });
+  it('is false for a plain second author', () => {
+    expect(isLeadAuthor(['A', me], false)).toBe(false);
+  });
+  it('is true for a joint second author', () => {
+    expect(isLeadAuthor(['A', me], true)).toBe(true);
+  });
+  it('is true for the third of three joint first authors', () => {
+    expect(isLeadAuthor(['A', 'B', me, 'D'], true, 3)).toBe(true);
+  });
+  it('is false for the third author when only two are joint', () => {
+    expect(isLeadAuthor(['A', 'B', me], true, 2)).toBe(false);
   });
 });
