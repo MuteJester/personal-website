@@ -29,14 +29,6 @@ const projById = new Map(projects.map((p) => [p.id, p]));
     <Image src={portrait} alt="Thomas Konstantinovsky giving a talk" width={640} class="portrait" />
   </section>
 
-  <aside class="now">
-    <span class="mono label">Current focus</span>
-    <p>
-      FlashbackGraph: a single graph built from 18.85 billion CDR3 observations across 35,619 human
-      repertoires, on which diversity, generation probabilities and anomaly scores are computed exactly.
-      Manuscript in preparation; presented at AIRR Community Meeting VIII, 2026.
-    </p>
-  </aside>
 
   <h2 class="areas-head">Research areas <span class="mono count">{areas.length}</span></h2>
   <div class="areas">
@@ -83,10 +75,6 @@ const projById = new Map(projects.map((p) => [p.id, p]));
   .intro h1 { margin-bottom: var(--space-4); }
   .interests { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
   .portrait { border-radius: var(--radius); }
-
-  .now { border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule)); background: var(--accent-soft); border-radius: var(--radius); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-7); }
-  .now .label { color: var(--accent); display: block; margin-bottom: var(--space-1); }
-  .now p { margin: 0; font-size: var(--text-sm); max-width: none; }
 
   .areas-head { display: flex; align-items: baseline; gap: var(--space-3); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100, 'opsz' 24; padding-bottom: var(--space-3); border-bottom: 2px solid var(--ink); }
   .count { color: var(--muted); }
