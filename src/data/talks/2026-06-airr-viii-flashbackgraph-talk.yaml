@@ -5,5 +5,5 @@ date: 2026-06-09
 location: Yale University, New Haven, USA
 type: short-talk
 coauthors: [Gur Yaari]
-description: Contributed short talk on a graph representation built from 18.85 billion CDR3 observations across 35,619 repertoires, on which diversity, generation probabilities and anomaly scores are computed exactly.
+description: Contributed talk on FlashbackGraph and the string-encoding approach behind it, which began with LZGraphs.
 video: https://www.youtube.com/watch?v=LtF271F_xIU

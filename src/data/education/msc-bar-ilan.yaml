@@ -1,7 +1,9 @@
-degree: MSc
+degree: Master of Science (MSc)
 field: Electrical Engineering
 institution: Bar-Ilan University
 location: Ramat Gan, Israel
 start: 2022-10-01
 end: 2024-06-27
 advisor: Prof. Gur Yaari
+notes:
+  - Combined MSc–PhD track, so no separate master's thesis. Research from this period was published as LZGraphs (Bioinformatics, 2023).

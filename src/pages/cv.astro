@@ -41,7 +41,8 @@ const { links, email } = profile.data;
         {links.scholar && <> · <a href={links.scholar} rel="noopener">Google Scholar</a></>}
       </p>
     </div>
-    {profile.data.cvPdf && <a class="mono" href={withBase(profile.data.cvPdf)}>Download PDF</a>}
+    {profile.data.cvPdf && <a class="mono download" href={withBase(profile.data.cvPdf)}>Download PDF</a>}
+    <p class="mono printed">Generated from thomaskon.com on {new Date().toISOString().slice(0, 10)}</p>
   </div>
 
   <SectionHeading title="Education" />
@@ -106,4 +107,9 @@ const { links, email } = profile.data;
   .top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-4); }
   .contact { color: var(--muted); font-size: var(--text-sm); margin-top: var(--space-2); }
   .sub { margin: var(--space-4) 0 0; }
+  .printed { display: none; }
+  @media print {
+    .download { display: none; }
+    .printed { display: block; width: 100%; margin: 0; }
+  }
 </style>

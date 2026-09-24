@@ -36,4 +36,4 @@ hero:
   webm: /video/hero-loop.webm
   poster: /images/hero-poster.jpg
   alt: Thomas Konstantinovsky giving a conference talk
-# cvPdf: /cv/thomas-konstantinovsky-cv.pdf
+cvPdf: /cv/thomas-konstantinovsky-cv.pdf
