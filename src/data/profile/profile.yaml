@@ -13,11 +13,10 @@ bio: >-
   expertise is in probability theory and mathematical modeling, machine
   learning and deep learning, data science, and the tools of compression and
   information theory, which I apply to problems in adaptive immune receptor
-  repertoire (AIRR) analysis and in biology more broadly. I build
-  representations of very large collections of immune receptor sequences,
-  design algorithms whose behavior can be analyzed and computed exactly, and
-  train models on the results. I hold my methods to the standard of being both
-  rigorous and usable, and I release them as open-source software.
+  repertoire (AIRR) analysis and in biology more broadly. I design algorithms
+  and data representations for problems at scale, and I hold them to two
+  standards: as efficient as the problem allows, and approachable by anyone,
+  whatever their field. Most of my work is released as open-source software.
 researchInterests:
   - Graph theory
   - Data compression and string algorithms
