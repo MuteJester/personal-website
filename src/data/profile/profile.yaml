@@ -1,20 +1,21 @@
 name: Thomas Konstantinovsky
-headline: Mathematical and computational methods for understanding the immune system
+headline: Mathematics and computation for the immune system
 affiliation: PhD candidate · Yaari Lab, Faculty of Engineering, Bar-Ilan University
 location: Israel
-email: thomaskon90@gmail.com
+email: thomas.konstat@gmail.com
 shortBio: >-
-  Computer scientist and applied mathematician bringing graph theory, compression,
-  information theory and probability to complex biological and medical problems,
-  with a focus on immunology and immune repertoire analysis. PhD candidate at
-  Bar-Ilan University.
+  Computer scientist working on the immune system, using graph theory, data
+  compression, information theory and probability to make large biological
+  sequence data tractable. PhD candidate at Bar-Ilan University.
 bio: >-
-  I am a computer scientist and applied mathematician. I develop graph-based
-  representations, machine-learning methods and simulation tools to study the
-  diversity of adaptive immune receptors, drawing on graph theory, data
-  compression, information theory and probability. The work connects
-  mathematical ideas with open-source research software, including AlignAIR,
-  GenAIRR and LZGraphs.
+  I am a computer scientist working on the immune system. What draws me is the
+  mathematics that makes biological data tractable: graph theory, data
+  compression, information theory and probability. I use them to build
+  representations of very large collections of immune receptor sequences, to
+  design algorithms whose behavior can be analyzed and, where possible, computed
+  exactly, and to train machine-learning models on the results. I care about
+  methods that are rigorous and usable in equal measure, and I release them as
+  open-source software.
 researchInterests:
   - Graph theory
   - Data compression and string algorithms
