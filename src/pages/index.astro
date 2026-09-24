@@ -17,8 +17,7 @@ const news = (await getCollection('news')).sort(byDateDesc).slice(0, 5);
 
 const sameAs = Object.values(profile.data.links).filter(Boolean);
 const site = Astro.site?.toString() ?? '';
-const jsonLd = {
-  '@context': 'https://schema.org',
+const person = {
   '@type': 'Person',
   '@id': `${site}#person`,
   name: profile.data.name,
@@ -28,7 +27,13 @@ const jsonLd = {
   jobTitle: 'PhD candidate',
   description: profile.data.shortBio,
   email: `mailto:${profile.data.email}`,
-  image: new URL(withBase('/images/og.jpg'), Astro.site).toString(),
+  image: {
+    '@type': 'ImageObject',
+    url: new URL(withBase('/images/portrait.jpg'), Astro.site).toString(),
+    caption: profile.data.name,
+    width: 800,
+    height: 800,
+  },
   url: site,
   affiliation: { '@type': 'CollegeOrUniversity', name: 'Bar-Ilan University', url: 'https://www.biu.ac.il/' },
   alumniOf: [
@@ -37,6 +42,14 @@ const jsonLd = {
   ],
   knowsAbout: profile.data.researchInterests,
   sameAs,
+};
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfilePage',
+  '@id': `${site}#profile`,
+  url: site,
+  name: profile.data.name,
+  mainEntity: person,
 };
 ---
 

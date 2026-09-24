@@ -16,9 +16,34 @@ const leadAuthor = (p: (typeof all)[number]) => {
 };
 const first = rest.filter(leadAuthor).sort(byYear);
 const other = rest.filter((p) => !leadAuthor(p)).sort(byYear);
+
+const site = Astro.site?.toString() ?? '';
+const personId = `${site}#person`;
+const articles = rest.map((p) => ({
+  '@type': 'ScholarlyArticle',
+  '@id': `${site}publications/#${p.id}`,
+  headline: p.data.title,
+  name: p.data.title,
+  datePublished: String(p.data.year),
+  isPartOf: { '@type': 'Periodical', name: p.data.venue },
+  author: p.data.authors.map((name) =>
+    name === SELF ? { '@type': 'Person', '@id': personId, name } : { '@type': 'Person', name },
+  ),
+  ...(p.data.doi && { sameAs: `https://doi.org/${p.data.doi}`, identifier: { '@type': 'PropertyValue', propertyID: 'DOI', value: p.data.doi } }),
+  ...(p.data.arxiv && { sameAs: `https://arxiv.org/abs/${p.data.arxiv}` }),
+  ...(p.data.abstract && { abstract: p.data.abstract }),
+}));
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': `${site}publications/`,
+  name: 'Publications',
+  about: { '@type': 'Person', '@id': personId, name: SELF },
+  hasPart: articles,
+};
 ---
 
-<BaseLayout title="Publications" description="Papers and preprints by Thomas Konstantinovsky.">
+<BaseLayout title="Publications" description="Papers and preprints by Thomas Konstantinovsky." jsonLd={jsonLd}>
   <h1>Publications</h1>
   <p class="lede">† marks joint first authorship. PDFs are the open-access versions of record.</p>
 
