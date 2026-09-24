@@ -15,7 +15,9 @@ const experience = await getCollection('experience');
 const research = experience.filter((e) => e.data.kind === 'research').sort(byEndDesc);
 const industry = experience.filter((e) => e.data.kind === 'industry').sort(byEndDesc);
 const teaching = experience.filter((e) => e.data.kind === 'teaching').sort(byEndDesc);
-const awards = (await getCollection('awards')).sort(byDateDesc);
+const allAwards = (await getCollection('awards')).sort(byDateDesc);
+const funding = allAwards.filter((a) => a.data.kind !== 'award');
+const awards = allAwards.filter((a) => a.data.kind === 'award');
 const talks = (await getCollection('talks')).sort(byDateDesc);
 const patents = (await getCollection('patents')).sort(byDateDesc);
 const service = (await getCollection('service')).sort(byEndDesc);
@@ -77,7 +79,12 @@ const { links, email } = profile.data;
     />
   ))}
 
-  <SectionHeading title="Awards and fellowships" />
+  <SectionHeading title="Funding and fellowships" />
+  {funding.map(({ data }) => (
+    <TimelineItem when={data.end ? formatDateRange(data.date, data.end) : formatMonthYear(data.date)} title={data.title} subtitle={data.issuer} meta={data.kind === 'fellowship' ? 'Fellowship' : 'Scholarship'} description={data.description} />
+  ))}
+
+  <SectionHeading title="Awards" />
   {awards.map(({ data }) => (
     <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={data.issuer} description={data.description} />
   ))}

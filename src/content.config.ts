@@ -124,6 +124,8 @@ const awards = defineCollection({
     title: z.string(),
     issuer: z.string(),
     date: z.coerce.date(),
+    end: z.coerce.date().optional(), // for multi-year fellowships and scholarships
+    kind: z.enum(['fellowship', 'scholarship', 'award']).default('award'),
     description: z.string().optional(),
   }),
 });
