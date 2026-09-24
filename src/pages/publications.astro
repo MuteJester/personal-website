@@ -1,4 +1,36 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import PublicationItem from '../components/PublicationItem.astro';
+
+const all = await getCollection('publications');
+const inPrep = all.filter((p) => p.data.status === 'in-preparation');
+const rest = all.filter((p) => p.data.status !== 'in-preparation');
+const byYear = (a: (typeof all)[number], b: (typeof all)[number]) =>
+  b.data.year - a.data.year || a.data.title.localeCompare(b.data.title);
+const first = rest.filter((p) => p.data.selected).sort(byYear);
+const other = rest.filter((p) => !p.data.selected).sort(byYear);
 ---
-<BaseLayout title="Publications"><h1>Publications</h1></BaseLayout>
+
+<BaseLayout title="Publications" description="Papers and preprints by Thomas Konstantinovsky.">
+  <h1>Publications</h1>
+  <p class="lede">† marks joint first authorship. PDFs are the open-access versions of record.</p>
+
+  {inPrep.length > 0 && (
+    <>
+      <SectionHeading number="00" title="In preparation" />
+      {inPrep.map((pub) => <PublicationItem pub={pub} />)}
+    </>
+  )}
+
+  <SectionHeading number="01" title="Papers and preprints" />
+  {first.map((pub) => <PublicationItem pub={pub} />)}
+
+  <SectionHeading number="02" title="Other publications" />
+  {other.map((pub) => <PublicationItem pub={pub} compact />)}
+</BaseLayout>
+
+<style>
+  .lede { color: var(--muted); margin-bottom: var(--space-6); }
+</style>
