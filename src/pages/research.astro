@@ -2,7 +2,6 @@
 import { getCollection, getEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 import { withBase } from '../lib/url';
 import portrait from '../assets/images/speaking-closeup.jpg';
 
@@ -14,65 +13,108 @@ const pubById = new Map(pubs.map((p) => [p.id, p]));
 const projById = new Map(projects.map((p) => [p.id, p]));
 ---
 
-<BaseLayout title="Research" description="Research areas: immune repertoire representation, deep learning for receptor alignment, simulation and benchmarking, string algorithms.">
+<BaseLayout title="Research" description="Mathematical and computational methods for large biological data, with the adaptive immune system as the main testbed.">
   <section class="intro">
     <div>
       <h1>Research</h1>
       <p>
-        My work asks how to represent, align and simulate adaptive immune receptor repertoires so that
-        their statistics can be computed exactly and methods can be evaluated against known ground
-        truth. It runs along four threads.
+        I work on mathematical and computational methods that make large biological data tractable:
+        representations that keep structure at scale, algorithms whose behavior can be analyzed,
+        simulators with full ground truth, and machine-learning models trained on them. The adaptive
+        immune system is my main testbed, because its receptor repertoires are among the largest and
+        most diverse sequence collections in biology.
       </p>
       <ul class="interests">{profile?.data.researchInterests.map((i) => <li class="mono">{i}</li>)}</ul>
     </div>
     <Image src={portrait} alt="Thomas Konstantinovsky giving a talk" width={640} class="portrait" />
   </section>
 
-  {areas.map((area, i) => (
-    <section>
-      <SectionHeading number={String(i + 1).padStart(2, '0')} title={area.data.title} id={area.id} />
-      <div class="grid">
-        <span />
-        <div>
-          <p class="summary">{area.data.summary}</p>
-          <p>{area.data.body}</p>
-          <dl class="refs">
-            {area.data.publications.length > 0 && (
-              <>
-                <dt class="mono">Papers</dt>
-                <dd>
-                  {area.data.publications
-                    .map((id) => pubById.get(id))
-                    .filter((p): p is NonNullable<typeof p> => Boolean(p))
-                    .map((p) => <a href={`${withBase('publications/')}#${p.id}`}>{p.data.title}</a>)}
-                </dd>
-              </>
+  <aside class="now">
+    <span class="mono label">Current focus</span>
+    <p>
+      FlashbackGraph: a single graph built from 18.85 billion CDR3 observations across 35,619 human
+      repertoires, on which diversity, generation probabilities and anomaly scores are computed exactly.
+      Manuscript in preparation; presented at AIRR Community Meeting VIII, 2026.
+    </p>
+  </aside>
+
+  <h2 class="areas-head">Research areas <span class="mono count">{areas.length}</span></h2>
+  <div class="areas">
+    {areas.map((area, i) => {
+      const papers = area.data.publications.map((id) => pubById.get(id)).filter((p): p is NonNullable<typeof p> => Boolean(p));
+      const tools = area.data.software.map((id) => projById.get(id)).filter((p): p is NonNullable<typeof p> => Boolean(p));
+      return (
+        <details class="row" id={area.id}>
+          <summary>
+            <span class="mono num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="text">
+              <span class="title">{area.data.title}</span>
+              <span class="summary">{area.data.summary}</span>
+            </span>
+            <span class="chev" aria-hidden="true"></span>
+          </summary>
+          <div class="body">
+            <p>{area.data.body}</p>
+            {(papers.length > 0 || tools.length > 0) && (
+              <dl class="refs">
+                {papers.length > 0 && (
+                  <>
+                    <dt class="mono">Papers</dt>
+                    <dd>{papers.map((p) => <a href={`${withBase('publications/')}#${p.id}`}>{p.data.title}</a>)}</dd>
+                  </>
+                )}
+                {tools.length > 0 && (
+                  <>
+                    <dt class="mono">Software</dt>
+                    <dd>{tools.map((p) => <a href={`${withBase('software/')}#${p.id}`}>{p.data.name}</a>)}</dd>
+                  </>
+                )}
+              </dl>
             )}
-            {area.data.software.length > 0 && (
-              <>
-                <dt class="mono">Software</dt>
-                <dd>
-                  {area.data.software
-                    .map((id) => projById.get(id))
-                    .filter((p): p is NonNullable<typeof p> => Boolean(p))
-                    .map((p) => <a href={`${withBase('software/')}#${p.id}`}>{p.data.name}</a>)}
-                </dd>
-              </>
-            )}
-          </dl>
-        </div>
-      </div>
-    </section>
-  ))}
+          </div>
+        </details>
+      );
+    })}
+  </div>
 </BaseLayout>
 
 <style>
-  .intro { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--space-7); align-items: start; margin-bottom: var(--space-7); }
+  .intro { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: var(--space-7); align-items: start; margin-bottom: var(--space-6); }
   .intro h1 { margin-bottom: var(--space-4); }
   .interests { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
   .portrait { border-radius: var(--radius); }
-  .summary { font-family: var(--font-display); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100; }
+
+  .now { border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule)); background: var(--accent-soft); border-radius: var(--radius); padding: var(--space-4) var(--space-5); margin-bottom: var(--space-7); }
+  .now .label { color: var(--accent); display: block; margin-bottom: var(--space-1); }
+  .now p { margin: 0; font-size: var(--text-sm); max-width: none; }
+
+  .areas-head { display: flex; align-items: baseline; gap: var(--space-3); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100, 'opsz' 24; padding-bottom: var(--space-3); border-bottom: 2px solid var(--ink); }
+  .count { color: var(--muted); }
+  .row { border-bottom: 1px solid var(--rule); scroll-margin-top: var(--space-6); }
+  summary {
+    display: grid; grid-template-columns: 3.5rem minmax(0, 1fr) 1rem; column-gap: var(--space-4); align-items: baseline;
+    padding: var(--space-4) var(--space-2); margin-inline: calc(-1 * var(--space-2)); border-radius: 8px; cursor: pointer; list-style: none;
+    transition: background-color var(--ease);
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary:hover { background: var(--accent-soft); }
+  summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .num { color: var(--accent); }
+  .text { display: grid; gap: 0.15rem; }
+  .title { font-weight: 600; font-size: var(--text-base); line-height: 1.35; }
+  .summary { color: var(--muted); font-size: var(--text-sm); }
+  .chev { width: 0.5rem; height: 0.5rem; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg); transition: transform var(--ease); justify-self: end; margin-top: -0.2rem; }
+  .row[open] .chev { transform: rotate(-135deg); margin-top: 0.2rem; }
+  .body { padding: var(--space-2) 0 var(--space-5) calc(3.5rem + var(--space-4)); }
+  .body p { font-size: var(--text-sm); }
   .refs { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-4); margin: 0; font-size: var(--text-sm); }
   .refs dd { margin: 0; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); }
-  @media (max-width: 720px) { .intro { grid-template-columns: minmax(0, 1fr); } }
+  @media (max-width: 720px) {
+    .intro { grid-template-columns: minmax(0, 1fr); }
+    summary { grid-template-columns: minmax(0, 1fr) 1rem; row-gap: var(--space-1); }
+    .num { grid-column: 1; }
+    .text { grid-column: 1; }
+    .chev { grid-column: 2; grid-row: 1; }
+    .body { padding-left: 0; }
+  }
 </style>

@@ -38,4 +38,5 @@ try {
   console.log(`[cv-pdf] wrote ${OUT} (${(statSync(OUT).size / 1024).toFixed(0)} KB)`);
 } finally {
   preview.kill('SIGTERM');
+  try { execFileSync('npx', ['astro', 'preview', 'stop'], { stdio: 'ignore' }); } catch {}
 }
