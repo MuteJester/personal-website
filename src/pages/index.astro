@@ -4,8 +4,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import PublicationRow from '../components/PublicationRow.astro';
+import PatentRow from '../components/PatentRow.astro';
 import { withBase } from '../lib/url';
-import { byDateDesc, formatMonthYear } from '../lib/format';
+import { byDateDesc } from '../lib/format';
 
 const profile = await getEntry('profile', 'profile');
 if (!profile) throw new Error('Missing profile');
@@ -82,32 +83,11 @@ const jsonLd = {
   <p class="more"><a href={withBase('publications/')}>All publications</a></p>
 
   <SectionHeading title="Patents" />
-  <ul class="patents">
-    {patents.map(({ data }) => (
-      <li class="patent">
-        <span class="mono when">{formatMonthYear(data.date)}</span>
-        <div>
-          <p class="ptitle">{data.url ? <a href={data.url} rel="noopener">{data.title}</a> : data.title}</p>
-          <p class="pmeta">
-            {data.status === 'granted' ? `${data.number}, granted` : `${data.note ?? 'Patent application'}, filed`}
-            {data.assignee && ` · ${data.assignee}`}
-            {data.inventors.length > 1 && ` · with ${data.inventors.filter((n) => n !== profile.data.name).join(', ')}`}
-          </p>
-        </div>
-      </li>
-    ))}
-  </ul>
+  <div class="pubs">{patents.map((p) => <PatentRow patent={p} />)}</div>
 </BaseLayout>
 
 <style>
   .pubs { border-bottom: 0; }
-  .patents { list-style: none; margin: 0; padding: 0; }
-  .patent { display: grid; grid-template-columns: 3.5rem minmax(0, 1fr); column-gap: var(--space-4); align-items: baseline; padding-block: var(--space-3); border-bottom: 1px solid var(--rule); }
-  .ptitle { font-weight: 600; font-size: var(--text-base); margin: 0 0 0.15rem; max-width: none; }
-  .ptitle a { color: var(--ink); text-decoration: none; }
-  .ptitle a:hover { color: var(--accent); }
-  .pmeta { font-size: var(--text-sm); color: var(--muted); margin: 0; max-width: none; }
-  @media (max-width: 720px) { .patent { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-1); } }
   .more { margin-block: var(--space-4) 0; font-size: var(--text-sm); }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-4); }
   .card { padding: var(--space-5); border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper-2); display: flex; flex-direction: column; gap: var(--space-2); }
