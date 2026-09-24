@@ -1,9 +1,9 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
-// https://astro.build/config
 export default defineConfig({
-  // `site` is used for canonical URLs. Do not set `base`.
   site: 'https://thomaskon.com',
   trailingSlash: 'ignore',
+  integrations: [sitemap()],
 });

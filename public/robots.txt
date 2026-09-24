@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-# Sitemap is added once the domain is configured (see README).
+Sitemap: https://thomaskon.com/sitemap-index.xml
