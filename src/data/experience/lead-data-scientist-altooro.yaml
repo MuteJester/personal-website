@@ -4,4 +4,9 @@ kind: industry
 location: Tel Aviv, Israel
 start: 2021-07-01
 end: 2022-06-01
-description: Built the machine-learning stack for AI-based developer assessment, from NLP models over source code to production deployment. Work led to a granted US patent.
+description: Built the startup's machine-learning capability from the ground up, for AI-based assessment of software developers.
+highlights:
+  - Developed new mathematical approaches to developer assessment; the core model was later granted a US patent.
+  - Built NLP pipelines over source code for regression tasks, and researched deep-learning NLP models for generative and discriminative goals.
+  - Planned, ran and analyzed statistical experiments to identify new measurable developer traits.
+  - Deployed models to production and maintained the backend services supporting the platform's data pipelines.

@@ -4,4 +4,8 @@ kind: research
 location: Tel Aviv, Israel
 start: 2020-12-01
 end: 2022-12-01
-description: Machine-learning analysis of DNA-methylation data. Co-authored two papers on epigenetic aging.
+description: Data science and machine learning within a multidisciplinary team of biologists and clinicians studying epigenetic aging.
+highlights:
+  - Analyzed DNA-methylation and other genomic data to find patterns, trends and anomalies relevant to the research questions.
+  - Designed and implemented custom machine-learning algorithms and analysis pipelines tailored to the needs of the biological and medical staff.
+  - Co-authored two papers on epigenetic aging (Epigenetics and Chromatin, 2022; bioRxiv, 2022).
