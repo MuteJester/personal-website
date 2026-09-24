@@ -1,7 +1,30 @@
 ---
+import { getEntry } from 'astro:content';
+const profile = await getEntry('profile', 'profile');
+const links = profile?.data.links ?? {};
+const email = profile?.data.email;
 const year = new Date().getFullYear();
+const items = [
+  email && { label: 'Email', href: `mailto:${email}` },
+  links.scholar && { label: 'Google Scholar', href: links.scholar },
+  links.github && { label: 'GitHub', href: links.github },
+  links.linkedin && { label: 'LinkedIn', href: links.linkedin },
+  links.orcid && { label: 'ORCID', href: links.orcid },
+].filter(Boolean) as { label: string; href: string }[];
 ---
 
-<footer>
-  <p>© {year} Thomas Konstantinovsky</p>
+<footer class="wrap">
+  <hr class="rule" />
+  <div class="row">
+    <span class="mono">© {year} Thomas Konstantinovsky</span>
+    <ul>
+      {items.map((l) => <li><a href={l.href} rel="me noopener">{l.label}</a></li>)}
+    </ul>
+  </div>
 </footer>
+
+<style>
+  .row { display: flex; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; padding-block: var(--space-5) var(--space-7); }
+  ul { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  li a { font-size: var(--text-sm); }
+</style>

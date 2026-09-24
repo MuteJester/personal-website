@@ -1,0 +1,13 @@
+---
+interface Props { number: string; title: string; id?: string }
+const { number, title, id } = Astro.props;
+---
+<div class="grid head" id={id}>
+  <span class="mono num" aria-hidden="true">{number}</span>
+  <h2>{title}</h2>
+</div>
+<style>
+  .head { align-items: baseline; padding-block: var(--space-6) var(--space-4); border-top: 1px solid var(--rule); }
+  .num { color: var(--accent); }
+  @media (max-width: 720px) { .head { row-gap: var(--space-1); } }
+</style>

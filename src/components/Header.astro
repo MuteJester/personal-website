@@ -1,22 +1,33 @@
 ---
-// Placeholder navigation. Layout and styling are decided in the design step.
 import { withBase } from '../lib/url';
-
 const nav = [
-  { href: withBase('/'), label: 'Home' },
   { href: withBase('research/'), label: 'Research' },
   { href: withBase('publications/'), label: 'Publications' },
   { href: withBase('talks/'), label: 'Talks' },
+  { href: withBase('software/'), label: 'Software' },
   { href: withBase('cv/'), label: 'CV' },
 ];
+const path = Astro.url.pathname;
+const isActive = (href: string) => path.startsWith(href);
 ---
 
-<header>
+<header class="wrap">
+  <a class="name" href={withBase('/')}>Thomas Konstantinovsky</a>
   <nav aria-label="Primary">
-    <ul>
-      {nav.map((item) => (
-        <li><a href={item.href}>{item.label}</a></li>
-      ))}
-    </ul>
+    {nav.map((item) => (
+      <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+    ))}
   </nav>
 </header>
+
+<style>
+  header {
+    display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4);
+    flex-wrap: wrap; padding-block: var(--space-5); border-bottom: 1px solid var(--rule);
+  }
+  .name { font-family: var(--font-display); font-size: var(--text-lg); color: var(--ink); background: none; font-variation-settings: 'SOFT' 100; }
+  nav { display: flex; gap: var(--space-5); flex-wrap: wrap; }
+  nav a { color: var(--muted); font-size: var(--text-sm); background-size: 0 1px; }
+  nav a:hover, nav a[aria-current='page'] { color: var(--ink); background-size: 100% 1px; }
+  nav a[aria-current='page'] { color: var(--accent); }
+</style>
