@@ -2,7 +2,7 @@
 import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import PublicationItem from '../components/PublicationItem.astro';
+import PublicationRow from '../components/PublicationRow.astro';
 
 const SELF = 'Thomas Konstantinovsky';
 const profile = await getEntry('profile', 'profile');
@@ -48,27 +48,27 @@ const jsonLd = {
 <BaseLayout title="Publications" description="Papers and preprints by Thomas Konstantinovsky." jsonLd={jsonLd}>
   <h1>Publications</h1>
   <p class="lede">
-    † joint first authors. PDFs are open-access or author copies.
+    Click a title for authors, abstract and links. † joint first authors.
     {profile?.data.links.scholar && <>{' '}Full list on <a href={profile.data.links.scholar} rel="noopener">Google Scholar</a>.</>}
   </p>
 
   <SectionHeading title="First-author papers" />
-  {first.map((pub) => <PublicationItem pub={pub} />)}
+  {first.map((pub) => <PublicationRow pub={pub} />)}
 
   <SectionHeading title="Co-authored papers" />
-  {coauthored.map((pub) => <PublicationItem pub={pub} compact />)}
+  {coauthored.map((pub) => <PublicationRow pub={pub} />)}
 
   {earlier.length > 0 && (
     <>
       <SectionHeading title="Earlier work" />
-      {earlier.map((pub) => <PublicationItem pub={pub} compact />)}
+      {earlier.map((pub) => <PublicationRow pub={pub} />)}
     </>
   )}
 
   {inPrep.length > 0 && (
     <>
       <SectionHeading title="In preparation" />
-      {inPrep.map((pub) => <PublicationItem pub={pub} compact />)}
+      {inPrep.map((pub) => <PublicationRow pub={pub} />)}
     </>
   )}
 </BaseLayout>

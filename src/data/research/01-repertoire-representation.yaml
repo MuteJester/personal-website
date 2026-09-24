@@ -10,6 +10,6 @@ body: >-
   observations across 35,619 human repertoires, on which entropy, Hill diversity
   and sequence probabilities are computed exactly by dynamic programming
   (manuscript in preparation).
-publications: [2023-lzgraphs, 2026-flashbackgraph]
+publications: [2023-lzgraphs]
 software: [lzgraphs]
 order: 1
