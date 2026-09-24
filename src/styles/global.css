@@ -34,14 +34,13 @@ p { margin: 0 0 var(--space-4); max-width: var(--measure); }
 
 a {
   color: var(--accent);
-  text-decoration: none;
-  background-image: linear-gradient(currentColor, currentColor);
-  background-size: 100% 1px;
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  transition: background-size var(--ease);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+  transition: text-decoration-color var(--ease);
 }
-a:hover { background-size: 100% 2px; }
+a:hover { text-decoration-color: currentColor; }
 a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
 .mono {

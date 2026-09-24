@@ -16,19 +16,31 @@ const featured = (await getCollection('projects', (p) => p.data.featured)).sort(
 const news = (await getCollection('news')).sort(byDateDesc).slice(0, 5);
 
 const sameAs = Object.values(profile.data.links).filter(Boolean);
+const site = Astro.site?.toString() ?? '';
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
+  '@id': `${site}#person`,
   name: profile.data.name,
+  givenName: 'Thomas',
+  familyName: 'Konstantinovsky',
+  alternateName: ['Thomas Konstantinovsky', 'T. Konstantinovsky'],
+  jobTitle: 'PhD candidate',
   description: profile.data.shortBio,
   email: `mailto:${profile.data.email}`,
-  affiliation: { '@type': 'Organization', name: 'Bar-Ilan University' },
-  url: Astro.site?.toString(),
+  image: new URL(withBase('/images/og.jpg'), Astro.site).toString(),
+  url: site,
+  affiliation: { '@type': 'CollegeOrUniversity', name: 'Bar-Ilan University', url: 'https://www.biu.ac.il/' },
+  alumniOf: [
+    { '@type': 'CollegeOrUniversity', name: 'Bar-Ilan University' },
+    { '@type': 'CollegeOrUniversity', name: 'Holon Institute of Technology' },
+  ],
+  knowsAbout: profile.data.researchInterests,
   sameAs,
 };
 ---
 
-<BaseLayout title={profile.data.name} jsonLd={jsonLd}>
+<BaseLayout title={profile.data.name} ogType="profile" jsonLd={jsonLd}>
   <Hero profile={profile} />
 
   <SectionHeading number="01" title="Selected publications" />

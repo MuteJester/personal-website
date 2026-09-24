@@ -69,6 +69,6 @@ const projById = new Map(projects.map((p) => [p.id, p]));
   .portrait { border-radius: var(--radius); }
   .summary { font-family: var(--font-display); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100; }
   .refs { display: grid; grid-template-columns: max-content 1fr; gap: var(--space-2) var(--space-4); margin: 0; font-size: var(--text-sm); }
-  .refs dd { margin: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+  .refs dd { margin: 0; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-1); }
   @media (max-width: 720px) { .intro { grid-template-columns: minmax(0, 1fr); } }
 </style>
