@@ -5,15 +5,12 @@ import Hero from '../components/Hero.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import PublicationItem from '../components/PublicationItem.astro';
 import SoftwareCard from '../components/SoftwareCard.astro';
-import NewsList from '../components/NewsList.astro';
-import { byDateDesc } from '../lib/format';
 import { withBase } from '../lib/url';
 
 const profile = await getEntry('profile', 'profile');
 if (!profile) throw new Error('Missing profile');
 const selected = (await getCollection('publications', (p) => p.data.selected)).sort((a, b) => b.data.year - a.data.year);
 const featured = (await getCollection('projects', (p) => p.data.featured)).sort((a, b) => a.data.order - b.data.order);
-const news = (await getCollection('news')).sort(byDateDesc).slice(0, 3);
 
 const sameAs = Object.values(profile.data.links).filter(Boolean);
 const site = Astro.site?.toString() ?? '';
@@ -63,9 +60,6 @@ const jsonLd = {
   <SectionHeading title="Software" />
   <div class="cards">{featured.map((p) => <SoftwareCard project={p} />)}</div>
   <p class="more"><a href={withBase('software/')}>All software →</a></p>
-
-  <SectionHeading title="News" />
-  <NewsList items={news} />
 </BaseLayout>
 
 <style>

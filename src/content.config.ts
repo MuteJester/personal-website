@@ -165,13 +165,4 @@ const service = defineCollection({
   }),
 });
 
-const news = defineCollection({
-  loader: yaml('news'),
-  schema: z.object({
-    date: z.coerce.date(),
-    text: z.string(),
-    url: link.optional(),
-  }),
-});
-
-export const collections = { profile, research, education, experience, publications, talks, awards, projects, patents, service, news };
+export const collections = { profile, research, education, experience, publications, talks, awards, projects, patents, service };
