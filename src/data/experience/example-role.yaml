@@ -1,0 +1,11 @@
+# EXAMPLE ENTRY - replace or delete. One file per position.
+role: Research Scientist
+organization: Example Lab
+location: City, Country
+start: 2022-01-01
+# end: 2024-01-01   # omit while current
+description: One-line summary of the position.
+highlights:
+  - Notable achievement or responsibility one.
+  - Notable achievement or responsibility two.
+order: 1

@@ -1,0 +1,11 @@
+# EXAMPLE ENTRY - replace or delete. One file per degree.
+degree: Ph.D.
+field: Computer Science
+institution: Example University
+location: City, Country
+start: 2021-10-01
+# end: 2025-06-01   # omit while in progress
+thesis: Example thesis title
+advisor: Prof. Example Advisor
+description: One-line summary of the degree, focus, or notable outcome.
+order: 1

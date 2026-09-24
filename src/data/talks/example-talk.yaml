@@ -1,0 +1,9 @@
+# EXAMPLE ENTRY - replace or delete. One file per talk or poster.
+title: An Example Talk Title
+event: Example Conference 2024
+date: 2024-06-15
+location: City, Country
+type: talk   # talk | invited | poster | workshop | panel
+# url: https://example.org/event
+# slides: /slides/2024-example.pdf
+# video: https://youtube.com/watch?v=XXXX

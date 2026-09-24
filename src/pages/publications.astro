@@ -1,0 +1,17 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const publications = (await getCollection('publications')).sort((a, b) => b.data.year - a.data.year);
+---
+
+<BaseLayout title="Publications">
+  <h1>Publications</h1>
+  <ul>
+    {publications.map(({ data }) => (
+      <li>
+        {data.authors.join(', ')}. <strong>{data.title}</strong>. {data.venue}, {data.year}.
+      </li>
+    ))}
+  </ul>
+</BaseLayout>

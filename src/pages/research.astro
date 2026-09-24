@@ -1,0 +1,14 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const profile = await getEntry('profile', 'profile');
+const interests = profile?.data.researchInterests ?? [];
+---
+
+<BaseLayout title="Research">
+  <h1>Research</h1>
+  <ul>
+    {interests.map((interest) => <li>{interest}</li>)}
+  </ul>
+</BaseLayout>

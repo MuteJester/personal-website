@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+# Sitemap is added once the domain is configured (see README).

@@ -1,0 +1,7 @@
+# EXAMPLE ENTRY - replace or delete. One file per project.
+name: Example Project
+description: One or two sentences on what it does and why it matters.
+repo: https://github.com/MuteJester/example
+tags: [python, machine-learning]
+featured: true
+order: 1

@@ -1,0 +1,22 @@
+---
+// Placeholder navigation. Layout and styling are decided in the design step.
+import { withBase } from '../lib/url';
+
+const nav = [
+  { href: withBase('/'), label: 'Home' },
+  { href: withBase('research/'), label: 'Research' },
+  { href: withBase('publications/'), label: 'Publications' },
+  { href: withBase('talks/'), label: 'Talks' },
+  { href: withBase('cv/'), label: 'CV' },
+];
+---
+
+<header>
+  <nav aria-label="Primary">
+    <ul>
+      {nav.map((item) => (
+        <li><a href={item.href}>{item.label}</a></li>
+      ))}
+    </ul>
+  </nav>
+</header>

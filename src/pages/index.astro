@@ -1,0 +1,14 @@
+---
+import { getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const profile = await getEntry('profile', 'profile');
+if (!profile) throw new Error('Missing src/data/profile/profile.yaml');
+const { name, headline, bio } = profile.data;
+---
+
+<BaseLayout title="Home">
+  <h1>{name}</h1>
+  <p>{headline}</p>
+  <p>{bio}</p>
+</BaseLayout>
