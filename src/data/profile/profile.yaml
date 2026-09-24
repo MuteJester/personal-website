@@ -1,23 +1,30 @@
 name: Thomas Konstantinovsky
-headline: Computational immunology · machine learning · string algorithms
+headline: Mathematics and computer science for complex biological systems
 affiliation: Faculty of Engineering, Bar-Ilan University
 location: Israel
 email: thomaskon90@gmail.com
 shortBio: >-
-  PhD candidate at Bar-Ilan University working on computational immunology,
-  deep learning for immune-receptor sequence analysis, and string algorithms.
+  Computer scientist and applied mathematician using graph theory, compression,
+  information theory and probability to model biological systems, with a focus on
+  immunology and immune repertoire analysis. PhD candidate at Bar-Ilan University.
 bio: >-
-  I am a PhD candidate in the Faculty of Engineering at Bar-Ilan University,
-  advised by Prof. Gur Yaari. I work on computational immunology: graph-based and
-  compression-based representations of T- and B-cell receptor repertoires,
-  deep-learning aligners for immunoglobulin sequences, and simulation frameworks
-  with full ground truth for benchmarking. The methods are released as open-source
-  software (GenAIRR, AlignAIR, LZGraphs). Expected PhD completion: 2027.
+  I am a computer scientist and applied mathematician, and a PhD candidate in the
+  Faculty of Engineering at Bar-Ilan University, advised by Prof. Gur Yaari. I use
+  graph theory, data compression, information theory and probability to build
+  models of complex biological and health systems, with a focus on immunology and
+  the analysis of adaptive immune receptor repertoires. I am drawn to
+  representations that make very large biological sequence spaces tractable, and
+  to methods whose behavior can be characterized and computed exactly, from
+  combinatorial decompositions of strings to probabilistic models learned from
+  data. The resulting methods are released as open-source software. Expected PhD
+  completion: 2027.
 researchInterests:
-  - Computational immunology
-  - Machine learning
   - Graph theory
-  - String algorithms and compression
+  - Data compression and string algorithms
+  - Information theory
+  - Probability and statistical modeling
+  - Machine learning
+  - Computational immunology and immune repertoire analysis
 links:
   github: https://github.com/MuteJester
   scholar: https://scholar.google.com/citations?user=hFwsRS4AAAAJ
