@@ -1,0 +1,22 @@
+---
+interface Props { when: string; title: string; subtitle?: string; meta?: string; notes?: string[]; description?: string }
+const { when, title, subtitle, meta, notes = [], description } = Astro.props;
+---
+<article class="item grid">
+  <span class="mono">{when}</span>
+  <div>
+    <h3>{title}</h3>
+    {subtitle && <p class="sub">{subtitle}</p>}
+    {meta && <p class="mono meta">{meta}</p>}
+    {description && <p class="desc">{description}</p>}
+    {notes.length > 0 && <ul class="notes">{notes.map((n) => <li>{n}</li>)}</ul>}
+  </div>
+</article>
+<style>
+  .item { padding-block: var(--space-4); border-top: 1px solid var(--rule); }
+  h3 { margin-bottom: var(--space-1); }
+  .sub { color: var(--muted); font-size: var(--text-sm); margin-bottom: var(--space-1); }
+  .meta { margin-bottom: var(--space-2); text-transform: none; letter-spacing: 0; }
+  .desc, .notes { font-size: var(--text-sm); margin-bottom: 0; }
+  .notes { padding-left: 1.2em; }
+</style>

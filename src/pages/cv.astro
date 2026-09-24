@@ -1,4 +1,64 @@
 ---
+import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import TimelineItem from '../components/TimelineItem.astro';
+import { byDateDesc, byEndDesc, formatDateRange, formatMonthYear } from '../lib/format';
+import { withBase } from '../lib/url';
+
+const profile = await getEntry('profile', 'profile');
+const education = (await getCollection('education')).sort(byEndDesc);
+const experience = await getCollection('experience');
+const research = experience.filter((e) => e.data.kind === 'research').sort(byEndDesc);
+const industry = experience.filter((e) => e.data.kind === 'industry').sort(byEndDesc);
+const teaching = experience.filter((e) => e.data.kind === 'teaching').sort(byEndDesc);
+const awards = (await getCollection('awards')).sort(byDateDesc);
+const talks = (await getCollection('talks')).sort(byDateDesc);
 ---
-<BaseLayout title="Cv"><h1>Cv</h1></BaseLayout>
+
+<BaseLayout title="CV" description="Curriculum vitae of Thomas Konstantinovsky.">
+  <div class="top">
+    <h1>Curriculum vitae</h1>
+    {profile?.data.cvPdf && <a class="mono" href={withBase(profile.data.cvPdf)}>Download PDF</a>}
+  </div>
+
+  <SectionHeading number="01" title="Education" />
+  {education.map(({ data }) => (
+    <TimelineItem
+      when={formatDateRange(data.start, data.end)}
+      title={`${data.degree} in ${data.field}`}
+      subtitle={`${data.institution}${data.location ? ` · ${data.location}` : ''}`}
+      meta={data.advisor && `Advisor: ${data.advisor}`}
+      notes={data.notes}
+    />
+  ))}
+
+  <SectionHeading number="02" title="Research positions" />
+  {research.map(({ data }) => (
+    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} notes={data.highlights} />
+  ))}
+
+  <SectionHeading number="03" title="Industry" />
+  {industry.map(({ data }) => (
+    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} notes={data.highlights} />
+  ))}
+
+  <SectionHeading number="04" title="Teaching" />
+  {teaching.map(({ data }) => (
+    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} notes={data.highlights} />
+  ))}
+
+  <SectionHeading number="05" title="Awards and fellowships" />
+  {awards.map(({ data }) => (
+    <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={data.issuer} description={data.description} />
+  ))}
+
+  <SectionHeading number="06" title="Talks and service" />
+  {talks.map(({ data }) => (
+    <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={`${data.event}${data.location ? ` · ${data.location}` : ''}`} />
+  ))}
+</BaseLayout>
+
+<style>
+  .top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+</style>
