@@ -4,20 +4,21 @@ affiliation: Faculty of Engineering, Bar-Ilan University
 location: Israel
 email: thomaskon90@gmail.com
 shortBio: >-
-  Computer scientist and applied mathematician using graph theory, compression,
-  information theory and probability to model biological systems, with a focus on
-  immunology and immune repertoire analysis. PhD candidate at Bar-Ilan University.
+  Computer scientist and applied mathematician bringing graph theory, compression,
+  information theory and probability to complex biological and medical problems,
+  with a focus on immunology and immune repertoire analysis. PhD candidate at
+  Bar-Ilan University.
 bio: >-
-  I am a computer scientist and applied mathematician, and a PhD candidate in the
-  Faculty of Engineering at Bar-Ilan University, advised by Prof. Gur Yaari. I use
-  graph theory, data compression, information theory and probability to build
-  models of complex biological and health systems, with a focus on immunology and
-  the analysis of adaptive immune receptor repertoires. I am drawn to
-  representations that make very large biological sequence spaces tractable, and
-  to methods whose behavior can be characterized and computed exactly, from
-  combinatorial decompositions of strings to probabilistic models learned from
-  data. The resulting methods are released as open-source software. Expected PhD
-  completion: 2027.
+  I am a computer scientist and applied mathematician working on the biology of
+  the immune system. I want to understand human health through data, and to find
+  new ways into medical problems that resist conventional approaches. I bring
+  graph theory, data compression, information theory and probability to complex
+  biological questions, looking for the representation that turns an intractable
+  problem into one that can be computed exactly. My current focus is immunology
+  and the analysis of adaptive immune receptor repertoires, as a PhD candidate in
+  the Faculty of Engineering at Bar-Ilan University, advised by Prof. Gur Yaari. I
+  am at my best on problems that are hard to state precisely, and I enjoy building
+  the methods and the software that make them tractable.
 researchInterests:
   - Graph theory
   - Data compression and string algorithms
