@@ -6,6 +6,7 @@ app: https://alignair.ai
 pypi: AlignAIR
 paper: 2025-alignair
 kind: research
+plain: Uses deep learning to identify the gene segments and boundaries in antibody sequences, with calibrated confidence for every call.
 tags: [deep-learning, alignment, python]
 featured: true
 order: 2

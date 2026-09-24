@@ -10,3 +10,4 @@ code: https://github.com/MuteJester/LZGraphs
 selected: true
 abstract: >-
   T-cell receptor beta chain (TCRB) repertoires are crucial for understanding immune responses, but their diversity makes them hard to represent and analyze. We introduce an encoding of TCRB repertoires based on the Lempel-Ziv 76 algorithm that yields a graph-like model of a repertoire. The representation supports generation probability inference, feature-vector derivation, sequence generation, a new diversity estimate and a new sequence centrality measure, and requires no alignment or reference genotype. Applied to four large public TCRB datasets, it demonstrates a scalable approach for large sequencing data. Implemented in the LZGraphs Python package.
+featuredOrder: 3

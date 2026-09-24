@@ -4,16 +4,21 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import PublicationItem from '../components/PublicationItem.astro';
-import SoftwareCard from '../components/SoftwareCard.astro';
 import { withBase } from '../lib/url';
 
 const profile = await getEntry('profile', 'profile');
 if (!profile) throw new Error('Missing profile');
-const selected = (await getCollection('publications', (p) => p.data.selected)).sort((a, b) => b.data.year - a.data.year);
-const featured = (await getCollection('projects', (p) => p.data.featured)).sort((a, b) => a.data.order - b.data.order);
+const selected = (await getCollection('publications', (p) => p.data.selected)).sort(
+  (a, b) => a.data.featuredOrder - b.data.featuredOrder || b.data.year - a.data.year,
+);
+const contributions = (await getCollection('projects', (p) => p.data.kind === 'research' && Boolean(p.data.plain))).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const pubs = await getCollection('publications');
+const pubById = new Map(pubs.map((p) => [p.id, p]));
 
-const sameAs = Object.values(profile.data.links).filter(Boolean);
 const site = Astro.site?.toString() ?? '';
+const sameAs = Object.values(profile.data.links).filter(Boolean);
 const person = {
   '@type': 'Person',
   '@id': `${site}#person`,
@@ -53,16 +58,34 @@ const jsonLd = {
 <BaseLayout title={profile.data.name} ogType="profile" jsonLd={jsonLd}>
   <Hero profile={profile} />
 
+  <SectionHeading title="Research contributions" />
+  <div class="cards">
+    {contributions.map(({ id, data }) => {
+      const paper = data.paper ? pubById.get(data.paper) : undefined;
+      return (
+        <article class="card">
+          <h3>{data.name}</h3>
+          <p class="plain">{data.plain}</p>
+          <ul class="links">
+            {paper && <li><a href={`${withBase('publications/')}#${paper.id}`}>{paper.data.venueShort ?? paper.data.venue} {paper.data.year}</a></li>}
+            <li><a href={`${withBase('software/')}#${id}`}>Software</a></li>
+          </ul>
+        </article>
+      );
+    })}
+  </div>
+
   <SectionHeading title="Selected publications" />
   {selected.map((pub) => <PublicationItem pub={pub} compact />)}
-  <p class="more"><a href={withBase('publications/')}>All publications →</a></p>
-
-  <SectionHeading title="Software" />
-  <div class="cards">{featured.map((p) => <SoftwareCard project={p} />)}</div>
-  <p class="more"><a href={withBase('software/')}>All software →</a></p>
+  <p class="more"><a href={withBase('publications/')}>All publications</a></p>
 </BaseLayout>
 
 <style>
   .more { margin-block: var(--space-4) 0; font-size: var(--text-sm); }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-4); }
+  .card { padding: var(--space-5); border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper-2); display: flex; flex-direction: column; gap: var(--space-2); }
+  .card h3 { font-family: var(--font-display); font-weight: 500; font-size: var(--text-lg); }
+  .plain { font-size: var(--text-sm); margin: 0; flex: 1; }
+  .links { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  .links a { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; }
 </style>

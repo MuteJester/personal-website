@@ -27,7 +27,7 @@ const published = pubs.filter((p) => p.data.status !== 'in-preparation');
 const firstAuthor = published.filter(leadAuthor).sort(byYear);
 const coauthored = published.filter((p) => !leadAuthor(p)).sort(byYear);
 
-const typeLabel: Record<string, string> = { talk: 'Talk', lightning: 'Lightning talk', poster: 'Poster', demo: 'Demo', invited: 'Invited talk' };
+const typeLabel: Record<string, string> = { talk: 'Talk', 'short-talk': 'Short talk', lightning: 'Lightning talk', poster: 'Poster', demo: 'Demo', invited: 'Invited talk' };
 const { links, email } = profile.data;
 ---
 
@@ -81,7 +81,7 @@ const { links, email } = profile.data;
     <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={data.issuer} description={data.description} />
   ))}
 
-  <SectionHeading title="Talks" />
+  <SectionHeading title="Talks and posters" />
   {talks.map(({ data }) => (
     <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={`${data.event}${data.location ? ` · ${data.location}` : ''}`} meta={typeLabel[data.type]} />
   ))}

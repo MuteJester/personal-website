@@ -9,3 +9,4 @@ pdf: /papers/2026-flashback.pdf
 selected: true
 abstract: >-
   We introduce Flashback, a reversible string decomposition that repeatedly peels the maximal leading and trailing character runs from a sentinel-wrapped input, recording each pair as one bilateral token. Decomposition and reconstruction both run in linear time and space. The central result is a run-pairing theorem: Flashback pairs the first run of the string with the last, the second with the second-to-last, and so on, giving an exact token count that matches a lower bound for any admissible bilateral run-peeling scheme. Structural properties follow as corollaries, including a two-symbol irreducible kernel, a characterization of palindromes, a finite-state description of the image, and edit locality.
+featuredOrder: 4

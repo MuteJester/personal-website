@@ -28,6 +28,8 @@ const profile = defineCollection({
       poster: z.string(),
       alt: z.string(),
     }),
+    credentials: z.array(z.string()).default([]),
+    heroCaption: z.string().optional(),
     cvPdf: z.string().optional(),
   }),
 });
@@ -93,6 +95,7 @@ const publications = defineCollection({
     app: link.optional(),
     abstract: z.string().optional(),
     selected: z.boolean().default(false),
+    featuredOrder: z.number().default(99),
   }),
 });
 
@@ -100,13 +103,16 @@ const talks = defineCollection({
   loader: yaml('talks'),
   schema: z.object({
     title: z.string(),
-    event: z.string(),
-    date: z.coerce.date(),
+    event: z.string(), // conference or meeting name; entries with the same event are grouped
+    eventShort: z.string().optional(),
+    date: z.coerce.date(), // date of the contribution (or first day of the event)
     location: z.string().optional(),
-    type: z.enum(['talk', 'lightning', 'poster', 'demo', 'invited']),
-    role: z.enum(['presenter', 'organizer']).default('presenter'),
+    type: z.enum(['talk', 'short-talk', 'lightning', 'poster', 'demo', 'invited']),
+    coauthors: z.array(z.string()).default([]),
     description: z.string().optional(),
     url: link.optional(),
+    slides: z.string().optional(),
+    poster: z.string().optional(),
     video: link.optional(),
   }),
 });
@@ -132,6 +138,7 @@ const projects = defineCollection({
     app: link.optional(),
     pypi: z.string().optional(),
     paper: z.string().optional(), // publication id
+    plain: z.string().optional(), // one-sentence explanation for non-specialists
     kind: z.enum(['research', 'tool']).default('tool'),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),

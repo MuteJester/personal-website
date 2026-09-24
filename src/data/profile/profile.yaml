@@ -1,6 +1,6 @@
 name: Thomas Konstantinovsky
-headline: Mathematics and computer science for complex biological systems
-affiliation: Faculty of Engineering, Bar-Ilan University
+headline: Mathematical and computational methods for understanding the immune system
+affiliation: PhD candidate · Yaari Lab, Faculty of Engineering, Bar-Ilan University
 location: Israel
 email: thomaskon90@gmail.com
 shortBio: >-
@@ -9,13 +9,12 @@ shortBio: >-
   with a focus on immunology and immune repertoire analysis. PhD candidate at
   Bar-Ilan University.
 bio: >-
-  I am a computer scientist and applied mathematician working on the biology of
-  the immune system. I want to understand human health through data, and to find
-  new ways into medical problems that resist conventional approaches. I bring
-  graph theory, data compression, information theory and probability to complex
-  biological questions, looking for the representation that turns an intractable
-  problem into one that can be computed exactly. My current focus is immunology
-  and the analysis of adaptive immune receptor repertoires.
+  I am a computer scientist and applied mathematician. I develop graph-based
+  representations, machine-learning methods and simulation tools to study the
+  diversity of adaptive immune receptors, drawing on graph theory, data
+  compression, information theory and probability. The work connects
+  mathematical ideas with open-source research software, including AlignAIR,
+  GenAIRR and LZGraphs.
 researchInterests:
   - Graph theory
   - Data compression and string algorithms
@@ -23,6 +22,10 @@ researchInterests:
   - Probability and statistical modeling
   - Machine learning
   - Computational immunology and immune repertoire analysis
+credentials:
+  - First- and joint-first-author papers in Nucleic Acids Research, Bioinformatics and Briefings in Bioinformatics.
+  - Fellow of the Council for Higher Education (VATAT) program for outstanding doctoral students in AI and data science.
+heroCaption: AIRR Community Meeting VIII, Yale University, June 2026
 links:
   github: https://github.com/MuteJester
   scholar: https://scholar.google.com/citations?user=hFwsRS4AAAAJ

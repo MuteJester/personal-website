@@ -2,25 +2,103 @@
 import { getCollection } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import TalkItem from '../components/TalkItem.astro';
-import { byDateDesc } from '../lib/format';
+import { formatMonthYear } from '../lib/format';
+import { withBase } from '../lib/url';
 import banner from '../assets/images/speaking-auditorium.jpg';
 
-const talks = (await getCollection('talks')).sort(byDateDesc);
+const entries = (await getCollection('talks')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+type Talk = (typeof entries)[number];
+const typeLabel: Record<string, string> = {
+  talk: 'Talk', 'short-talk': 'Short talk', lightning: 'Lightning talk', poster: 'Poster', demo: 'Demo', invited: 'Invited talk',
+};
+// Group by event, newest event first, keeping contribution order within an event.
+const groups: { event: string; location?: string; when: string; items: Talk[] }[] = [];
+for (const t of entries) {
+  let g = groups.find((x) => x.event === t.data.event);
+  if (!g) {
+    g = { event: t.data.event, location: t.data.location, when: formatMonthYear(t.data.date), items: [] };
+    groups.push(g);
+  }
+  g.items.push(t);
+}
+const rank: Record<string, number> = { invited: 0, talk: 1, 'short-talk': 2, lightning: 3, demo: 4, poster: 5 };
+for (const g of groups) g.items.sort((a, b) => rank[a.data.type] - rank[b.data.type]);
+const counts = entries.reduce(
+  (acc, t) => {
+    if (t.data.type === 'poster') acc.posters += 1; else acc.talks += 1;
+    return acc;
+  },
+  { talks: 0, posters: 0 },
+);
 ---
 
-<BaseLayout title="Talks" description="Conference talks, posters, demos and organizing roles.">
+<BaseLayout title="Talks and posters" description="Conference talks, posters and demos by Thomas Konstantinovsky.">
   <figure class="banner">
     <Image src={banner} alt="Thomas Konstantinovsky speaking at a conference" widths={[720, 1200, 1600]} sizes="(max-width: 72rem) 100vw, 72rem" loading="eager" />
-    <figcaption><h1>Talks</h1></figcaption>
+    <figcaption>
+      <h1>Talks and posters</h1>
+      <p class="mono">{counts.talks} talks and demos · {counts.posters} posters</p>
+    </figcaption>
   </figure>
-  {talks.map((t) => <TalkItem talk={t} />)}
+
+  {groups.map((g) => (
+    <section class="event">
+      <header class="event-head">
+        <h2>{g.event}</h2>
+        <p class="mono meta">{g.when}{g.location && ` · ${g.location}`}</p>
+      </header>
+      <ul class="items">
+        {g.items.map(({ data }) => (
+          <li class="item">
+            <span class={`badge badge-${data.type}`}>{typeLabel[data.type]}</span>
+            <div class="body">
+              <h3>{data.title}</h3>
+              {data.coauthors.length > 0 && <p class="with">with {data.coauthors.join(', ')}</p>}
+              {data.description && <p class="desc">{data.description}</p>}
+              {(data.slides || data.poster || data.url || data.video) && (
+                <ul class="links">
+                  {data.slides && <li><a href={withBase(data.slides)}>Slides</a></li>}
+                  {data.poster && <li><a href={withBase(data.poster)}>Poster</a></li>}
+                  {data.video && <li><a href={data.video} rel="noopener">Video</a></li>}
+                  {data.url && <li><a href={data.url} rel="noopener">Event</a></li>}
+                </ul>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
 </BaseLayout>
 
 <style>
-  .banner { margin: 0 0 var(--space-6); position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 3 / 1; }
+  .banner { margin: 0 0 var(--space-7); position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 3 / 1; }
   .banner img { width: 100%; height: 100%; object-fit: cover; object-position: 70% 40%; }
-  figcaption { position: absolute; inset: auto 0 0 0; padding: var(--space-5); background: linear-gradient(transparent, rgb(0 0 0 / 0.55)); }
-  figcaption h1 { color: #fff; }
-  @media (max-width: 720px) { .banner { aspect-ratio: 16 / 10; } }
+  figcaption { position: absolute; inset: auto 0 0 0; padding: var(--space-5); background: linear-gradient(transparent, rgb(0 0 0 / 0.6)); }
+  figcaption h1, figcaption p { color: #fff; margin: 0; }
+  figcaption .mono { color: rgb(255 255 255 / 0.8); margin-top: var(--space-1); }
+
+  .event { margin-bottom: var(--space-7); }
+  .event-head { border-bottom: 2px solid var(--ink); padding-bottom: var(--space-3); margin-bottom: var(--space-2); }
+  .event-head h2 { font-size: var(--text-lg); font-variation-settings: 'SOFT' 100, 'opsz' 24; }
+  .meta { margin-top: var(--space-1); }
+
+  .items { list-style: none; margin: 0; padding: 0; }
+  .item { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); column-gap: var(--space-4); padding-block: var(--space-4); border-bottom: 1px solid var(--rule); }
+  .badge {
+    align-self: start; justify-self: start;
+    font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 0.15rem 0.5rem; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); white-space: nowrap;
+  }
+  .badge-poster { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, var(--rule)); }
+  .badge-short-talk, .badge-talk, .badge-invited { color: var(--ink); border-color: var(--ink); }
+  h3 { font-family: var(--font-body); font-size: var(--text-base); font-weight: 600; line-height: 1.35; margin-bottom: var(--space-1); }
+  .with, .desc { font-size: var(--text-sm); margin-bottom: var(--space-2); }
+  .with { color: var(--muted); }
+  .links { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--space-4); }
+  .links a { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; }
+  @media (max-width: 720px) {
+    .banner { aspect-ratio: 16 / 10; }
+    .item { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-2); }
+  }
 </style>
