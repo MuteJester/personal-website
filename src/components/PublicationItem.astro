@@ -17,7 +17,7 @@ const links = [
   d.app && { label: 'Web app', href: d.app },
   d.url && { label: 'Link', href: d.url },
 ].filter(Boolean) as { label: string; href: string }[];
-const statusLabel = d.status === 'in-preparation' ? 'In preparation' : d.status === 'preprint' ? 'Preprint' : undefined;
+const statusLabel = d.status === 'preprint' ? 'Preprint' : undefined;
 ---
 
 <article class="pub grid" id={pub.id}>

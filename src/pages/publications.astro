@@ -1,25 +1,27 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import PublicationItem from '../components/PublicationItem.astro';
 
-const all = await getCollection('publications');
-const inPrep = all.filter((p) => p.data.status === 'in-preparation');
-const rest = all.filter((p) => p.data.status !== 'in-preparation');
-const byYear = (a: (typeof all)[number], b: (typeof all)[number]) =>
-  b.data.year - a.data.year || a.data.title.localeCompare(b.data.title);
 const SELF = 'Thomas Konstantinovsky';
-const leadAuthor = (p: (typeof all)[number]) => {
+const profile = await getEntry('profile', 'profile');
+const all = await getCollection('publications');
+type Pub = (typeof all)[number];
+const byYear = (a: Pub, b: Pub) => b.data.year - a.data.year || a.data.title.localeCompare(b.data.title);
+const leadAuthor = (p: Pub) => {
   const i = p.data.authors.indexOf(SELF);
   return i === 0 || (i === 1 && p.data.equalContribution);
 };
-const first = rest.filter(leadAuthor).sort(byYear);
-const other = rest.filter((p) => !leadAuthor(p)).sort(byYear);
+const published = all.filter((p) => p.data.status !== 'in-preparation');
+const first = published.filter((p) => leadAuthor(p) && p.data.year >= 2022).sort(byYear);
+const earlier = published.filter((p) => leadAuthor(p) && p.data.year < 2022).sort(byYear);
+const coauthored = published.filter((p) => !leadAuthor(p)).sort(byYear);
+const inPrep = all.filter((p) => p.data.status === 'in-preparation').sort(byYear);
 
 const site = Astro.site?.toString() ?? '';
 const personId = `${site}#person`;
-const articles = rest.map((p) => ({
+const articles = published.map((p) => ({
   '@type': 'ScholarlyArticle',
   '@id': `${site}publications/#${p.id}`,
   headline: p.data.title,
@@ -45,22 +47,32 @@ const jsonLd = {
 
 <BaseLayout title="Publications" description="Papers and preprints by Thomas Konstantinovsky." jsonLd={jsonLd}>
   <h1>Publications</h1>
-  <p class="lede">† marks joint first authorship. PDFs are the open-access versions of record.</p>
+  <p class="lede">
+    † joint first authors. PDFs are open-access or author copies.
+    {profile?.data.links.scholar && <>{' '}Full list on <a href={profile.data.links.scholar} rel="noopener">Google Scholar</a>.</>}
+  </p>
 
-  {inPrep.length > 0 && (
+  <SectionHeading title="First-author papers" />
+  {first.map((pub) => <PublicationItem pub={pub} />)}
+
+  <SectionHeading title="Co-authored papers" />
+  {coauthored.map((pub) => <PublicationItem pub={pub} compact />)}
+
+  {earlier.length > 0 && (
     <>
-      <SectionHeading number="00" title="In preparation" />
-      {inPrep.map((pub) => <PublicationItem pub={pub} />)}
+      <SectionHeading title="Earlier work" />
+      {earlier.map((pub) => <PublicationItem pub={pub} compact />)}
     </>
   )}
 
-  <SectionHeading number="01" title="Papers and preprints" />
-  {first.map((pub) => <PublicationItem pub={pub} />)}
-
-  <SectionHeading number="02" title="Other publications" />
-  {other.map((pub) => <PublicationItem pub={pub} compact />)}
+  {inPrep.length > 0 && (
+    <>
+      <SectionHeading title="In preparation" />
+      {inPrep.map((pub) => <PublicationItem pub={pub} compact />)}
+    </>
+  )}
 </BaseLayout>
 
 <style>
-  .lede { color: var(--muted); margin-bottom: var(--space-6); }
+  .lede { color: var(--muted); margin-bottom: var(--space-4); }
 </style>

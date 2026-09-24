@@ -11,7 +11,7 @@ const talks = (await getCollection('talks')).sort(byDateDesc);
 
 <BaseLayout title="Talks" description="Conference talks, posters, demos and organizing roles.">
   <figure class="banner">
-    <Image src={banner} alt="Thomas Konstantinovsky speaking to a full lecture hall" widths={[720, 1200, 1600]} sizes="(max-width: 72rem) 100vw, 72rem" loading="eager" />
+    <Image src={banner} alt="Thomas Konstantinovsky speaking at a conference" widths={[720, 1200, 1600]} sizes="(max-width: 72rem) 100vw, 72rem" loading="eager" />
     <figcaption><h1>Talks</h1></figcaption>
   </figure>
   {talks.map((t) => <TalkItem talk={t} />)}

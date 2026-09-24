@@ -1,5 +1,5 @@
 name: Thomas Konstantinovsky
-headline: PhD candidate · computational immunology · machine learning
+headline: Computational immunology · machine learning · string algorithms
 affiliation: Faculty of Engineering, Bar-Ilan University
 location: Israel
 email: thomaskon90@gmail.com
@@ -8,18 +8,16 @@ shortBio: >-
   deep learning for immune-receptor sequence analysis, and string algorithms.
 bio: >-
   I am a PhD candidate in the Faculty of Engineering at Bar-Ilan University,
-  working with Gur Yaari on computational immunology. I build methods that make
-  adaptive immune receptor repertoires tractable: graph models and
-  compression-based encodings of T- and B-cell receptors, deep-learning aligners
-  for immunoglobulin sequences, and simulation frameworks for honest
-  benchmarking. Most of this work ships as open-source software used across the
-  AIRR community.
+  advised by Prof. Gur Yaari. I work on computational immunology: graph-based and
+  compression-based representations of T- and B-cell receptor repertoires,
+  deep-learning aligners for immunoglobulin sequences, and simulation frameworks
+  with full ground truth for benchmarking. The methods are released as open-source
+  software (GenAIRR, AlignAIR, LZGraphs). Expected PhD completion: 2027.
 researchInterests:
   - Computational immunology
   - Machine learning
   - Graph theory
   - String algorithms and compression
-  - Natural language processing
 links:
   github: https://github.com/MuteJester
   scholar: https://scholar.google.com/citations?user=hFwsRS4AAAAJ
@@ -29,5 +27,5 @@ hero:
   mp4: /video/hero-loop.mp4
   webm: /video/hero-loop.webm
   poster: /images/hero-poster.jpg
-  alt: Thomas Konstantinovsky speaking at a lectern during a conference talk
+  alt: Thomas Konstantinovsky giving a conference talk
 # cvPdf: /cv/thomas-konstantinovsky-cv.pdf

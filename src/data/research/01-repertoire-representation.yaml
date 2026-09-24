@@ -1,14 +1,15 @@
 title: Representing immune repertoires
-summary: Compact, exact, alignment-free models of T- and B-cell receptor repertoires.
+summary: Alignment-free graph models of T- and B-cell receptor repertoires.
 body: >-
   A single person's repertoire holds millions of receptor sequences drawn from
-  an astronomically larger space. I work on representations that keep the
-  structure without the bulk: LZGraphs encodes a repertoire as a graph built
-  from Lempel-Ziv decompositions, giving generation probabilities, diversity
-  measures and sequence centrality without alignment or a reference genotype.
-  FlashbackGraph pushes this to population scale, a foundation graph built from
-  billions of CDR3 observations on which entropy, Hill diversity and sequence
-  probabilities are computed exactly by dynamic programming.
+  a far larger space. I work on representations that keep the structure without
+  the bulk. LZGraphs encodes a repertoire as a graph built from Lempel-Ziv
+  decompositions, giving generation probabilities, diversity measures and
+  sequence centrality without alignment or a reference genotype. FlashbackGraph
+  extends this to population scale: a single graph built from 18.85 billion CDR3
+  observations across 35,619 human repertoires, on which entropy, Hill diversity
+  and sequence probabilities are computed exactly by dynamic programming
+  (manuscript in preparation).
 publications: [2023-lzgraphs, 2026-flashbackgraph]
 software: [lzgraphs]
 order: 1

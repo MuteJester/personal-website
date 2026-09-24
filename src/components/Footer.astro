@@ -5,7 +5,7 @@ const links = profile?.data.links ?? {};
 const email = profile?.data.email;
 const year = new Date().getFullYear();
 const items = [
-  email && { label: 'Email', href: `mailto:${email}` },
+  email && { label: email, href: `mailto:${email}` },
   links.scholar && { label: 'Google Scholar', href: links.scholar },
   links.github && { label: 'GitHub', href: links.github },
   links.linkedin && { label: 'LinkedIn', href: links.linkedin },

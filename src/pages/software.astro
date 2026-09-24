@@ -1,15 +1,21 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
 import SoftwareCard from '../components/SoftwareCard.astro';
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const research = projects.filter((p) => p.data.kind === 'research');
+const tools = projects.filter((p) => p.data.kind !== 'research');
 ---
-<BaseLayout title="Software" description="Open-source tools for immune repertoire analysis and more.">
+<BaseLayout title="Software" description="Open-source research software for immune repertoire analysis, and a few general-purpose tools.">
   <h1>Software</h1>
-  <p class="lede">Everything here is open source. Issues and pull requests are welcome.</p>
-  <div class="cards">{projects.map((p) => <SoftwareCard project={p} />)}</div>
+  <p class="lede">Open-source research software from my PhD, plus a few general-purpose tools.</p>
+  <SectionHeading title="Research software" />
+  <div class="cards">{research.map((p) => <SoftwareCard project={p} />)}</div>
+  <SectionHeading title="Other tools" />
+  <div class="cards">{tools.map((p) => <SoftwareCard project={p} />)}</div>
 </BaseLayout>
 <style>
-  .lede { color: var(--muted); margin-bottom: var(--space-6); }
+  .lede { color: var(--muted); margin-bottom: var(--space-4); }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: var(--space-4); }
 </style>

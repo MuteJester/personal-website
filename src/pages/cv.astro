@@ -3,10 +3,13 @@ import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import TimelineItem from '../components/TimelineItem.astro';
+import PublicationItem from '../components/PublicationItem.astro';
 import { byDateDesc, byEndDesc, formatDateRange, formatMonthYear } from '../lib/format';
 import { withBase } from '../lib/url';
 
+const SELF = 'Thomas Konstantinovsky';
 const profile = await getEntry('profile', 'profile');
+if (!profile) throw new Error('Missing profile');
 const education = (await getCollection('education')).sort(byEndDesc);
 const experience = await getCollection('experience');
 const research = experience.filter((e) => e.data.kind === 'research').sort(byEndDesc);
@@ -14,15 +17,37 @@ const industry = experience.filter((e) => e.data.kind === 'industry').sort(byEnd
 const teaching = experience.filter((e) => e.data.kind === 'teaching').sort(byEndDesc);
 const awards = (await getCollection('awards')).sort(byDateDesc);
 const talks = (await getCollection('talks')).sort(byDateDesc);
+const patents = (await getCollection('patents')).sort(byDateDesc);
+const service = (await getCollection('service')).sort(byEndDesc);
+const pubs = await getCollection('publications');
+type Pub = (typeof pubs)[number];
+const byYear = (a: Pub, b: Pub) => b.data.year - a.data.year || a.data.title.localeCompare(b.data.title);
+const leadAuthor = (p: Pub) => {
+  const i = p.data.authors.indexOf(SELF);
+  return i === 0 || (i === 1 && p.data.equalContribution);
+};
+const published = pubs.filter((p) => p.data.status !== 'in-preparation');
+const firstAuthor = published.filter(leadAuthor).sort(byYear);
+const coauthored = published.filter((p) => !leadAuthor(p)).sort(byYear);
+
+const typeLabel: Record<string, string> = { talk: 'Talk', lightning: 'Lightning talk', poster: 'Poster', demo: 'Demo', invited: 'Invited talk' };
+const { links, email } = profile.data;
 ---
 
 <BaseLayout title="CV" description="Curriculum vitae of Thomas Konstantinovsky.">
   <div class="top">
-    <h1>Curriculum vitae</h1>
-    {profile?.data.cvPdf && <a class="mono" href={withBase(profile.data.cvPdf)}>Download PDF</a>}
+    <div>
+      <h1>Curriculum vitae</h1>
+      <p class="contact">
+        {profile.data.name} · {profile.data.affiliation} · <a href={`mailto:${email}`}>{email}</a>
+        {links.orcid && <> · <a href={links.orcid} rel="noopener">ORCID</a></>}
+        {links.scholar && <> · <a href={links.scholar} rel="noopener">Google Scholar</a></>}
+      </p>
+    </div>
+    {profile.data.cvPdf && <a class="mono" href={withBase(profile.data.cvPdf)}>Download PDF</a>}
   </div>
 
-  <SectionHeading number="01" title="Education" />
+  <SectionHeading title="Education" />
   {education.map(({ data }) => (
     <TimelineItem
       when={formatDateRange(data.start, data.end)}
@@ -33,32 +58,55 @@ const talks = (await getCollection('talks')).sort(byDateDesc);
     />
   ))}
 
-  <SectionHeading number="02" title="Research positions" />
+  <SectionHeading title="Research positions" />
   {research.map(({ data }) => (
     <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} notes={data.highlights} />
   ))}
 
-  <SectionHeading number="03" title="Industry" />
-  {industry.map(({ data }) => (
-    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} notes={data.highlights} />
+  <SectionHeading title="Publications" />
+  <p class="sub mono">First author</p>
+  {firstAuthor.map((pub) => <PublicationItem pub={pub} compact />)}
+  <p class="sub mono">Co-authored</p>
+  {coauthored.map((pub) => <PublicationItem pub={pub} compact />)}
+
+  <SectionHeading title="Patents" />
+  {patents.map(({ data }) => (
+    <TimelineItem
+      when={formatMonthYear(data.date)}
+      title={data.title}
+      subtitle={data.status === 'granted' ? `${data.number}, granted` : `${data.note ?? 'Patent application'}, filed`}
+      meta={`Inventors: ${data.inventors.join(', ')}${data.assignee ? ` · ${data.assignee}` : ''}`}
+    />
   ))}
 
-  <SectionHeading number="04" title="Teaching" />
-  {teaching.map(({ data }) => (
-    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} notes={data.highlights} />
-  ))}
-
-  <SectionHeading number="05" title="Awards and fellowships" />
+  <SectionHeading title="Awards and fellowships" />
   {awards.map(({ data }) => (
     <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={data.issuer} description={data.description} />
   ))}
 
-  <SectionHeading number="06" title="Talks and service" />
+  <SectionHeading title="Talks" />
   {talks.map(({ data }) => (
-    <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={`${data.event}${data.location ? ` · ${data.location}` : ''}`} />
+    <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={`${data.event}${data.location ? ` · ${data.location}` : ''}`} meta={typeLabel[data.type]} />
+  ))}
+
+  <SectionHeading title="Service" />
+  {service.map(({ data }) => (
+    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} />
+  ))}
+
+  <SectionHeading title="Teaching" />
+  {teaching.map(({ data }) => (
+    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} notes={data.highlights} />
+  ))}
+
+  <SectionHeading title="Industry" />
+  {industry.map(({ data }) => (
+    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} notes={data.highlights} />
   ))}
 </BaseLayout>
 
 <style>
-  .top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-6); }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .contact { color: var(--muted); font-size: var(--text-sm); margin-top: var(--space-2); }
+  .sub { margin: var(--space-4) 0 0; }
 </style>

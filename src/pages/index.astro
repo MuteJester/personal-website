@@ -13,7 +13,7 @@ const profile = await getEntry('profile', 'profile');
 if (!profile) throw new Error('Missing profile');
 const selected = (await getCollection('publications', (p) => p.data.selected)).sort((a, b) => b.data.year - a.data.year);
 const featured = (await getCollection('projects', (p) => p.data.featured)).sort((a, b) => a.data.order - b.data.order);
-const news = (await getCollection('news')).sort(byDateDesc).slice(0, 5);
+const news = (await getCollection('news')).sort(byDateDesc).slice(0, 3);
 
 const sameAs = Object.values(profile.data.links).filter(Boolean);
 const site = Astro.site?.toString() ?? '';
@@ -56,15 +56,15 @@ const jsonLd = {
 <BaseLayout title={profile.data.name} ogType="profile" jsonLd={jsonLd}>
   <Hero profile={profile} />
 
-  <SectionHeading number="01" title="Selected publications" />
+  <SectionHeading title="Selected publications" />
   {selected.map((pub) => <PublicationItem pub={pub} compact />)}
   <p class="more"><a href={withBase('publications/')}>All publications →</a></p>
 
-  <SectionHeading number="02" title="Software" />
+  <SectionHeading title="Software" />
   <div class="cards">{featured.map((p) => <SoftwareCard project={p} />)}</div>
   <p class="more"><a href={withBase('software/')}>All software →</a></p>
 
-  <SectionHeading number="03" title="News" />
+  <SectionHeading title="News" />
   <NewsList items={news} />
 </BaseLayout>
 

@@ -1,6 +1,7 @@
 name: BiGramGraph
-tagline: Bi-gram graph metrics
-description: Reference implementation of the algorithms and metrics from "On bi-gram graph attributes".
+tagline: Reference code for "On bi-gram graph attributes" (2021)
+description: Implementation of the algorithms and metrics described in the paper.
 repo: https://github.com/MuteJester/BiGramGraph
+paper: 2021-bigram-graph-attributes
 tags: [python, nlp, graphs]
 order: 7

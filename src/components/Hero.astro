@@ -6,7 +6,7 @@ import LinkList from './LinkList.astro';
 interface Props { profile: CollectionEntry<'profile'> }
 const { data } = Astro.props.profile;
 const links = [
-  { label: 'Email', href: `mailto:${data.email}` },
+  { label: data.email, href: `mailto:${data.email}` },
   data.links.scholar && { label: 'Scholar', href: data.links.scholar, external: true },
   data.links.github && { label: 'GitHub', href: data.links.github, external: true },
   data.links.linkedin && { label: 'LinkedIn', href: data.links.linkedin, external: true },

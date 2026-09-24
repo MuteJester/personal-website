@@ -3,6 +3,9 @@ tagline: Deep-learning aligner for immunoglobulin sequences
 description: Multi-task neural network for allele assignment, segmentation and productivity calls with calibrated likelihoods. Available as a Python package, a container image and a web application.
 repo: https://github.com/MuteJester/AlignAIR
 app: https://alignair.ai
+pypi: AlignAIR
+paper: 2025-alignair
+kind: research
 tags: [deep-learning, alignment, python]
 featured: true
 order: 2

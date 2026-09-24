@@ -1,6 +1,6 @@
 name: MediPlot
-tagline: Plotting helpers for biomedical data
-description: Opinionated, publication-ready figures for common biomedical analyses.
+tagline: Plotting functions for biomedical data
+description: Figure helpers for common biomedical analyses, with consistent styling for papers and reports.
 repo: https://github.com/MuteJester/MediPlot
 tags: [python, visualization]
 order: 5
