@@ -1,0 +1,32 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { formatMonthYear } from '../lib/format';
+interface Props { talk: CollectionEntry<'talks'> }
+const { data } = Astro.props.talk;
+const typeLabel: Record<string, string> = { talk: 'Talk', lightning: 'Lightning talk', poster: 'Poster', demo: 'Demo', invited: 'Invited talk' };
+const label = data.role === 'organizer' ? 'Organizer' : typeLabel[data.type];
+---
+<article class="talk grid">
+  <span class="mono">{formatMonthYear(data.date)}</span>
+  <div>
+    <p class="mono kind">{label}</p>
+    <h3>{data.title}</h3>
+    <p class="event">{data.event}{data.location && ` · ${data.location}`}</p>
+    {data.description && <p class="desc">{data.description}</p>}
+    {(data.url || data.video) && (
+      <ul class="links">
+        {data.url && <li><a href={data.url} rel="noopener">Link</a></li>}
+        {data.video && <li><a href={data.video} rel="noopener">Video</a></li>}
+      </ul>
+    )}
+  </div>
+</article>
+<style>
+  .talk { padding-block: var(--space-5); border-top: 1px solid var(--rule); }
+  .kind { color: var(--accent); margin-bottom: var(--space-1); }
+  h3 { font-family: var(--font-display); font-weight: 500; font-size: var(--text-lg); margin-bottom: var(--space-2); }
+  .event { color: var(--muted); font-size: var(--text-sm); margin-bottom: var(--space-2); }
+  .desc { font-size: var(--text-sm); }
+  .links { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--space-4); }
+  .links a { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; }
+</style>

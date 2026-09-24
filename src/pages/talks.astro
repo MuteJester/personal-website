@@ -1,4 +1,26 @@
 ---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import TalkItem from '../components/TalkItem.astro';
+import { byDateDesc } from '../lib/format';
+import banner from '../assets/images/speaking-auditorium.jpg';
+
+const talks = (await getCollection('talks')).sort(byDateDesc);
 ---
-<BaseLayout title="Talks"><h1>Talks</h1></BaseLayout>
+
+<BaseLayout title="Talks" description="Conference talks, posters, demos and organizing roles.">
+  <figure class="banner">
+    <Image src={banner} alt="Thomas Konstantinovsky speaking to a full lecture hall" widths={[720, 1200, 1600]} sizes="(max-width: 72rem) 100vw, 72rem" loading="eager" />
+    <figcaption><h1>Talks</h1></figcaption>
+  </figure>
+  {talks.map((t) => <TalkItem talk={t} />)}
+</BaseLayout>
+
+<style>
+  .banner { margin: 0 0 var(--space-6); position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 3 / 1; }
+  .banner img { width: 100%; height: 100%; object-fit: cover; object-position: 70% 40%; }
+  figcaption { position: absolute; inset: auto 0 0 0; padding: var(--space-5); background: linear-gradient(transparent, rgb(0 0 0 / 0.55)); }
+  figcaption h1 { color: #fff; }
+  @media (max-width: 720px) { .banner { aspect-ratio: 16 / 10; } }
+</style>
