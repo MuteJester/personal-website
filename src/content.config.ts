@@ -106,6 +106,7 @@ const talks = defineCollection({
     event: z.string(), // conference or meeting name; entries with the same event are grouped
     eventShort: z.string().optional(),
     date: z.coerce.date(), // date of the contribution (or first day of the event)
+    yearOnly: z.boolean().default(false), // true when only the year is known
     location: z.string().optional(),
     type: z.enum(['talk', 'short-talk', 'lightning', 'poster', 'demo', 'invited']),
     coauthors: z.array(z.string()).default([]),

@@ -16,7 +16,7 @@ const groups: { event: string; location?: string; when: string; items: Talk[] }[
 for (const t of entries) {
   let g = groups.find((x) => x.event === t.data.event);
   if (!g) {
-    g = { event: t.data.event, location: t.data.location, when: formatMonthYear(t.data.date), items: [] };
+    g = { event: t.data.event, location: t.data.location, when: t.data.yearOnly ? String(t.data.date.getUTCFullYear()) : formatMonthYear(t.data.date), items: [] };
     groups.push(g);
   }
   g.items.push(t);

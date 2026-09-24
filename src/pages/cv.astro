@@ -83,7 +83,7 @@ const { links, email } = profile.data;
 
   <SectionHeading title="Talks and posters" />
   {talks.map(({ data }) => (
-    <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={`${data.event}${data.location ? ` · ${data.location}` : ''}`} meta={typeLabel[data.type]} />
+    <TimelineItem when={data.yearOnly ? String(data.date.getUTCFullYear()) : formatMonthYear(data.date)} title={data.title} subtitle={`${data.event}${data.location ? ` · ${data.location}` : ''}`} meta={typeLabel[data.type]} />
   ))}
 
   <SectionHeading title="Service" />
