@@ -11,94 +11,97 @@ type Talk = (typeof entries)[number];
 const typeLabel: Record<string, string> = {
   talk: 'Talk', 'short-talk': 'Short talk', lightning: 'Lightning talk', poster: 'Poster', demo: 'Demo', invited: 'Invited talk',
 };
-// Group by event, newest event first, keeping contribution order within an event.
-const groups: { event: string; location?: string; when: string; items: Talk[] }[] = [];
-for (const t of entries) {
-  let g = groups.find((x) => x.event === t.data.event);
-  if (!g) {
-    g = { event: t.data.event, location: t.data.location, when: t.data.yearOnly ? String(t.data.date.getUTCFullYear()) : formatMonthYear(t.data.date), items: [] };
-    groups.push(g);
-  }
-  g.items.push(t);
-}
-const rank: Record<string, number> = { invited: 0, talk: 1, 'short-talk': 2, lightning: 3, demo: 4, poster: 5 };
-for (const g of groups) g.items.sort((a, b) => rank[a.data.type] - rank[b.data.type]);
-const counts = entries.reduce(
-  (acc, t) => {
-    if (t.data.type === 'poster') acc.posters += 1; else acc.talks += 1;
-    return acc;
-  },
-  { talks: 0, posters: 0 },
-);
+const isPoster = (t: Talk) => t.data.type === 'poster';
+const years = [...new Set(entries.map((t) => t.data.date.getUTCFullYear()))];
+const byYear = years.map((y) => ({ year: y, items: entries.filter((t) => t.data.date.getUTCFullYear() === y) }));
+const counts = { talks: entries.filter((t) => !isPoster(t)).length, posters: entries.filter(isPoster).length };
+const when = (t: Talk) => (t.data.yearOnly ? '' : formatMonthYear(t.data.date).replace(/ \d{4}$/, ''));
 ---
 
 <BaseLayout title="Talks and posters" description="Conference talks, posters and demos by Thomas Konstantinovsky.">
   <figure class="banner">
     <Image src={banner} alt="Thomas Konstantinovsky speaking at a conference" widths={[720, 1200, 1600]} sizes="(max-width: 72rem) 100vw, 72rem" loading="eager" />
-    <figcaption>
-      <h1>Talks and posters</h1>
-      <p class="mono">{counts.talks} talks and demos · {counts.posters} posters</p>
-    </figcaption>
+    <figcaption><h1>Talks and posters</h1></figcaption>
   </figure>
 
-  {groups.map((g) => (
-    <section class="event">
-      <header class="event-head">
-        <h2>{g.event}</h2>
-        <p class="mono meta">{g.when}{g.location && ` · ${g.location}`}</p>
-      </header>
-      <ul class="items">
-        {g.items.map(({ data }) => (
-          <li class="item">
-            <span class={`badge badge-${data.type}`}>{typeLabel[data.type]}</span>
-            <div class="body">
-              <h3>{data.title}</h3>
-              {data.coauthors.length > 0 && <p class="with">with {data.coauthors.join(', ')}</p>}
-              {data.description && <p class="desc">{data.description}</p>}
-              {(data.slides || data.poster || data.url || data.video) && (
-                <ul class="links">
-                  {data.slides && <li><a href={withBase(data.slides)}>Slides</a></li>}
-                  {data.poster && <li><a href={withBase(data.poster)}>Poster</a></li>}
-                  {data.video && <li><a href={data.video} rel="noopener">Video</a></li>}
-                  {data.url && <li><a href={data.url} rel="noopener">Event</a></li>}
-                </ul>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
-    </section>
-  ))}
+  <div class="toolbar">
+    <fieldset class="filter">
+      <legend class="sr-only">Show</legend>
+      <input type="radio" name="kind" id="kind-all" checked /><label for="kind-all">All <span class="mono">{entries.length}</span></label>
+      <input type="radio" name="kind" id="kind-talks" /><label for="kind-talks">Talks <span class="mono">{counts.talks}</span></label>
+      <input type="radio" name="kind" id="kind-posters" /><label for="kind-posters">Posters <span class="mono">{counts.posters}</span></label>
+    </fieldset>
+  </div>
+
+  <div class="list">
+    {byYear.map((g) => (
+      <section class="year">
+        <h2 class="mono">{g.year}</h2>
+        <ul>
+          {g.items.map(({ data }) => (
+            <li class={`row ${isPoster({ data } as Talk) ? 'is-poster' : 'is-talk'}`}>
+              <span class="mono month">{data.yearOnly ? '' : when({ data } as Talk)}</span>
+              <span class={`badge badge-${data.type}`}>{typeLabel[data.type]}</span>
+              <div class="body">
+                <p class="title">{data.title}</p>
+                <p class="venue">
+                  <span class="event">{data.eventShort ?? data.event}</span>
+                  {data.location && <span class="loc"> · {data.location}</span>}
+                  {data.coauthors.length > 0 && <span class="loc"> · with {data.coauthors.join(', ')}</span>}
+                </p>
+              </div>
+              <span class="links">
+                {data.video && <a href={data.video} rel="noopener">Video</a>}
+                {data.slides && <a href={withBase(data.slides)}>Slides</a>}
+                {data.poster && <a href={withBase(data.poster)}>Poster</a>}
+                {data.url && <a href={data.url} rel="noopener">Event</a>}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
 </BaseLayout>
 
 <style>
-  .banner { margin: 0 0 var(--space-7); position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 3 / 1; }
+  .banner { margin: 0 0 var(--space-5); position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 4 / 1; }
   .banner img { width: 100%; height: 100%; object-fit: cover; object-position: 70% 40%; }
-  figcaption { position: absolute; inset: auto 0 0 0; padding: var(--space-5); background: linear-gradient(transparent, rgb(0 0 0 / 0.6)); }
-  figcaption h1, figcaption p { color: #fff; margin: 0; }
-  figcaption .mono { color: rgb(255 255 255 / 0.8); margin-top: var(--space-1); }
+  figcaption { position: absolute; inset: auto 0 0 0; padding: var(--space-4) var(--space-5); background: linear-gradient(transparent, rgb(0 0 0 / 0.6)); }
+  figcaption h1 { color: #fff; margin: 0; }
 
-  .event { margin-bottom: var(--space-7); }
-  .event-head { border-bottom: 2px solid var(--ink); padding-bottom: var(--space-3); margin-bottom: var(--space-2); }
-  .event-head h2 { font-size: var(--text-lg); font-variation-settings: 'SOFT' 100, 'opsz' 24; }
-  .meta { margin-top: var(--space-1); }
+  .toolbar { display: flex; justify-content: flex-end; margin-bottom: var(--space-4); }
+  .filter { border: 1px solid var(--rule); border-radius: 999px; padding: 0.2rem; margin: 0; display: inline-flex; gap: 0.2rem; }
+  .filter input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .filter label { cursor: pointer; font-size: var(--text-sm); padding: 0.3rem 0.85rem; border-radius: 999px; color: var(--muted); display: inline-flex; gap: 0.4rem; align-items: baseline; }
+  .filter label .mono { font-size: 0.7rem; }
+  .filter input:checked + label { background: var(--ink); color: var(--paper); }
+  .filter input:checked + label .mono { color: var(--paper); opacity: 0.7; }
+  .filter input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+  :global(main):has(#kind-talks:checked) .is-poster, :global(main):has(#kind-posters:checked) .is-talk { display: none; }
+  :global(main):has(#kind-talks:checked) .year:not(:has(.is-talk)), :global(main):has(#kind-posters:checked) .year:not(:has(.is-poster)) { display: none; }
 
-  .items { list-style: none; margin: 0; padding: 0; }
-  .item { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); column-gap: var(--space-4); padding-block: var(--space-4); border-bottom: 1px solid var(--rule); }
-  .badge {
-    align-self: start; justify-self: start;
-    font-family: var(--font-mono); font-size: var(--text-xs); letter-spacing: 0.04em; text-transform: uppercase;
-    padding: 0.15rem 0.5rem; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); white-space: nowrap;
-  }
+  .year { display: grid; grid-template-columns: 5rem minmax(0, 1fr); column-gap: var(--space-4); padding-block: var(--space-4) 0; border-top: 2px solid var(--ink); margin-bottom: var(--space-5); }
+  .year h2 { font-size: var(--text-sm); color: var(--ink); padding-top: 0.2rem; }
+  .year ul { list-style: none; margin: 0; padding: 0; }
+  .row { display: grid; grid-template-columns: 2.5rem 7rem minmax(0, 1fr) auto; column-gap: var(--space-4); align-items: baseline; padding-block: var(--space-3); border-top: 1px solid var(--rule); }
+  .row:first-child { border-top: 0; }
+  .month { font-size: 0.7rem; }
+  .badge { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.1rem 0.5rem; border-radius: 999px; border: 1px solid var(--rule); color: var(--muted); white-space: nowrap; justify-self: start; }
   .badge-poster { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 40%, var(--rule)); }
-  .badge-short-talk, .badge-talk, .badge-invited { color: var(--ink); border-color: var(--ink); }
-  h3 { font-family: var(--font-body); font-size: var(--text-base); font-weight: 600; line-height: 1.35; margin-bottom: var(--space-1); }
-  .with, .desc { font-size: var(--text-sm); margin-bottom: var(--space-2); }
-  .with { color: var(--muted); }
-  .links { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--space-4); }
-  .links a { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; }
+  .badge-talk, .badge-short-talk, .badge-invited { color: var(--ink); border-color: var(--ink); }
+  .title { font-weight: 600; font-size: var(--text-sm); line-height: 1.35; margin: 0 0 0.15rem; max-width: none; }
+  .venue { font-size: var(--text-xs); color: var(--muted); margin: 0; max-width: none; }
+  .event { color: var(--ink); }
+  .links { display: flex; gap: var(--space-3); }
+  .links a { font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.04em; white-space: nowrap; }
   @media (max-width: 720px) {
-    .banner { aspect-ratio: 16 / 10; }
-    .item { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-2); }
+    .banner { aspect-ratio: 16 / 9; }
+    .toolbar { justify-content: flex-start; }
+    .year { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-2); }
+    .row { grid-template-columns: 7rem minmax(0, 1fr); row-gap: var(--space-1); }
+    .month { display: none; }
+    .body { grid-column: 1 / -1; }
+    .links { grid-column: 1 / -1; }
   }
 </style>
