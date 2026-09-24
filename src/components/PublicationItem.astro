@@ -1,0 +1,53 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { arxivUrl, doiUrl, pubmedUrl, splitAuthors } from '../lib/format';
+import { withBase } from '../lib/url';
+
+interface Props { pub: CollectionEntry<'publications'>; compact?: boolean }
+const { pub, compact = false } = Astro.props;
+const d = pub.data;
+const authors = splitAuthors(d.authors);
+const links = [
+  d.doi && { label: 'DOI', href: doiUrl(d.doi) },
+  d.arxiv && { label: 'arXiv', href: arxivUrl(d.arxiv) },
+  d.pmid && { label: 'PubMed', href: pubmedUrl(d.pmid) },
+  d.pdf && { label: 'PDF', href: withBase(d.pdf) },
+  d.code && { label: 'Code', href: d.code },
+  d.app && { label: 'Web app', href: d.app },
+  d.url && { label: 'Link', href: d.url },
+].filter(Boolean) as { label: string; href: string }[];
+const statusLabel = d.status === 'in-preparation' ? 'In preparation' : d.status === 'preprint' ? 'Preprint' : undefined;
+---
+
+<article class="pub grid" id={pub.id}>
+  <span class="mono year">{d.year}</span>
+  <div>
+    <h3 class="title">{d.title}</h3>
+    <p class="authors">
+      {authors.map((a, i) => (
+        <>
+          {a.self ? <strong>{a.name}</strong> : a.name}{d.equalContribution && i < 2 ? <sup title="Equal contribution">†</sup> : null}{i < authors.length - 1 ? ', ' : ''}
+        </>
+      ))}
+    </p>
+    <p class="venue">
+      <em>{d.venue}</em>{statusLabel && <span class="mono status"> · {statusLabel}</span>}
+    </p>
+    {!compact && d.abstract && <p class="abstract">{d.abstract}</p>}
+    {links.length > 0 && (
+      <ul class="links">{links.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
+    )}
+  </div>
+</article>
+
+<style>
+  .pub { padding-block: var(--space-5); border-top: 1px solid var(--rule); }
+  .title { font-family: var(--font-display); font-weight: 500; font-size: var(--text-lg); margin-bottom: var(--space-2); }
+  .authors, .venue { margin-bottom: var(--space-2); font-size: var(--text-sm); color: var(--muted); }
+  .authors strong { color: var(--ink); font-weight: 600; }
+  .status { color: var(--accent); }
+  .abstract { font-size: var(--text-sm); }
+  .links { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  .links a { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; }
+  @media (max-width: 720px) { .year { margin-bottom: var(--space-1); } }
+</style>

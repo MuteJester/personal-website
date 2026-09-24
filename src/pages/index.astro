@@ -1,4 +1,49 @@
 ---
+import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import PublicationItem from '../components/PublicationItem.astro';
+import SoftwareCard from '../components/SoftwareCard.astro';
+import NewsList from '../components/NewsList.astro';
+import { byDateDesc } from '../lib/format';
+import { withBase } from '../lib/url';
+
+const profile = await getEntry('profile', 'profile');
+if (!profile) throw new Error('Missing profile');
+const selected = (await getCollection('publications', (p) => p.data.selected)).sort((a, b) => b.data.year - a.data.year);
+const featured = (await getCollection('projects', (p) => p.data.featured)).sort((a, b) => a.data.order - b.data.order);
+const news = (await getCollection('news')).sort(byDateDesc).slice(0, 5);
+
+const sameAs = Object.values(profile.data.links).filter(Boolean);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.data.name,
+  description: profile.data.shortBio,
+  email: `mailto:${profile.data.email}`,
+  affiliation: { '@type': 'Organization', name: 'Bar-Ilan University' },
+  url: Astro.site?.toString(),
+  sameAs,
+};
 ---
-<BaseLayout title="Thomas Konstantinovsky"><h1>Home</h1></BaseLayout>
+
+<BaseLayout title={profile.data.name} jsonLd={jsonLd}>
+  <Hero profile={profile} />
+
+  <SectionHeading number="01" title="Selected publications" />
+  {selected.map((pub) => <PublicationItem pub={pub} compact />)}
+  <p class="more"><a href={withBase('publications/')}>All publications →</a></p>
+
+  <SectionHeading number="02" title="Software" />
+  <div class="cards">{featured.map((p) => <SoftwareCard project={p} />)}</div>
+  <p class="more"><a href={withBase('software/')}>All software →</a></p>
+
+  <SectionHeading number="03" title="News" />
+  <NewsList items={news} />
+</BaseLayout>
+
+<style>
+  .more { margin-block: var(--space-4) 0; font-size: var(--text-sm); }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-4); }
+</style>
