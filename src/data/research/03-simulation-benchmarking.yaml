@@ -1,0 +1,11 @@
+title: Simulation and benchmarking
+summary: Ground-truth simulators that let the field compare tools honestly.
+body: >-
+  Immunogenetics tools are hard to evaluate because real data has no ground
+  truth. GenAIRR simulates V(D)J recombination, somatic hypermutation and
+  sequencing corruption with full annotations, across more than twenty species.
+  We used it to run the first unbiased comparison of immunoglobulin aligners and
+  it now underpins the training data for AlignAIR and community benchmarks.
+publications: [2024-genairr-aligner-benchmark]
+software: [genairr]
+order: 3

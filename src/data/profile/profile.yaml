@@ -1,18 +1,33 @@
-# Single entry. Edit freely; fields are validated by src/content.config.ts.
 name: Thomas Konstantinovsky
-headline: Data Scientist | Researcher
-affiliation: ""
+headline: PhD candidate · computational immunology · machine learning
+affiliation: Faculty of Engineering, Bar-Ilan University
 location: Israel
 email: thomaskon90@gmail.com
+shortBio: >-
+  PhD candidate at Bar-Ilan University working on computational immunology,
+  deep learning for immune-receptor sequence analysis, and string algorithms.
 bio: >-
-  Short biography goes here. Two to four sentences about who you are,
-  what you work on, and what you care about.
+  I am a PhD candidate in the Faculty of Engineering at Bar-Ilan University,
+  working with Gur Yaari on computational immunology. I build methods that make
+  adaptive immune receptor repertoires tractable: graph models and
+  compression-based encodings of T- and B-cell receptors, deep-learning aligners
+  for immunoglobulin sequences, and simulation frameworks for honest
+  benchmarking. Most of this work ships as open-source software used across the
+  AIRR community.
 researchInterests:
-  - Example interest one
-  - Example interest two
+  - Computational immunology
+  - Machine learning
+  - Graph theory
+  - String algorithms and compression
+  - Natural language processing
 links:
   github: https://github.com/MuteJester
-  # scholar: https://scholar.google.com/citations?user=XXXX
-  # orcid: https://orcid.org/0000-0000-0000-0000
-  # linkedin: https://www.linkedin.com/in/XXXX
-cvPdf: /cv/thomas-konstantinovsky-cv.pdf
+  scholar: https://scholar.google.com/citations?user=hFwsRS4AAAAJ
+  linkedin: https://www.linkedin.com/in/thomas-konstantinovsky-56230117b
+  # orcid: https://orcid.org/XXXX-XXXX-XXXX-XXXX
+hero:
+  mp4: /video/hero-loop.mp4
+  webm: /video/hero-loop.webm
+  poster: /images/hero-poster.jpg
+  alt: Thomas Konstantinovsky speaking at a lectern during a conference talk
+# cvPdf: /cv/thomas-konstantinovsky-cv.pdf

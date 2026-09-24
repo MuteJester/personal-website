@@ -1,0 +1,9 @@
+title: A novel approach to T-cell receptor beta chain (TCRB) repertoire encoding using lossless string compression
+authors: [Thomas Konstantinovsky, Gur Yaari]
+venue: Bioinformatics
+year: 2023
+type: journal
+doi: 10.1093/bioinformatics/btad426
+pdf: /papers/2023-lzgraphs.pdf
+code: https://github.com/MuteJester/LZGraphs
+selected: true

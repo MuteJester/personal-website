@@ -1,0 +1,7 @@
+name: Fernsicht
+tagline: Watch long-running jobs from anywhere
+description: Wrap any command and follow its progress remotely over peer-to-peer WebRTC. Written in Go, with Homebrew and Scoop packages.
+repo: https://github.com/MuteJester/Fernsicht
+app: https://app.fernsicht.space/
+tags: [go, developer-tools]
+order: 6

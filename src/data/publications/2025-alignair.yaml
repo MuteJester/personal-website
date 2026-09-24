@@ -1,0 +1,13 @@
+title: Enhancing sequence alignment of adaptive immune receptors through multi-task deep learning
+authors: [Thomas Konstantinovsky, Ayelet Peres, Ran Eisenberg, Pazit Polak, Ofir Lindenbaum, Gur Yaari]
+venue: Nucleic Acids Research
+venueShort: NAR
+year: 2025
+type: journal
+equalContribution: true
+doi: 10.1093/nar/gkaf651
+pmid: "40650972"
+pdf: /papers/2025-alignair.pdf
+code: https://github.com/MuteJester/AlignAIR
+app: https://alignair.ai
+selected: true

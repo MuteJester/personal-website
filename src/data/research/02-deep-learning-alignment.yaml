@@ -1,0 +1,12 @@
+title: Deep learning for receptor alignment
+summary: Multi-task neural aligners that are faster and better calibrated than classical tools.
+body: >-
+  Assigning germline genes to a rearranged immunoglobulin sequence is the first
+  step of every repertoire analysis and one of its largest sources of error.
+  AlignAIR replaces heuristic alignment with a multi-task deep network trained
+  on realistic simulations. It sets state-of-the-art accuracy for allele
+  assignment, segmentation and productivity calls, and returns calibrated
+  likelihoods so downstream analyses can reason about uncertainty.
+publications: [2025-alignair]
+software: [alignair]
+order: 2

@@ -1,12 +1,8 @@
-// Content collections: every CV section is a folder of YAML files under src/data/.
-// One file = one entry. The Zod schema below validates each file at build time,
-// so a malformed entry fails `npm run build` instead of rendering incorrectly.
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
 const yaml = (dir: string) => glob({ base: `./src/data/${dir}`, pattern: '**/*.{yaml,yml}' });
-
 const link = z.url();
 
 const profile = defineCollection({
@@ -14,22 +10,37 @@ const profile = defineCollection({
   schema: z.object({
     name: z.string(),
     headline: z.string(),
-    affiliation: z.string().optional(),
-    location: z.string().optional(),
-    email: z.email().optional(),
+    affiliation: z.string(),
+    location: z.string(),
+    email: z.email(),
+    shortBio: z.string(),
     bio: z.string(),
-    researchInterests: z.array(z.string()).default([]),
-    links: z
-      .object({
-        github: link.optional(),
-        scholar: link.optional(),
-        orcid: link.optional(),
-        linkedin: link.optional(),
-        twitter: link.optional(),
-        website: link.optional(),
-      })
-      .default({}),
-    cvPdf: z.string().optional(), // path under public/
+    researchInterests: z.array(z.string()),
+    links: z.object({
+      github: link.optional(),
+      scholar: link.optional(),
+      orcid: link.optional(),
+      linkedin: link.optional(),
+    }),
+    hero: z.object({
+      mp4: z.string(),
+      webm: z.string(),
+      poster: z.string(),
+      alt: z.string(),
+    }),
+    cvPdf: z.string().optional(),
+  }),
+});
+
+const research = defineCollection({
+  loader: yaml('research'),
+  schema: z.object({
+    title: z.string(),
+    summary: z.string(),
+    body: z.string(),
+    publications: z.array(z.string()).default([]), // publication ids (file names without .yaml)
+    software: z.array(z.string()).default([]), // project ids
+    order: z.number(),
   }),
 });
 
@@ -41,11 +52,9 @@ const education = defineCollection({
     institution: z.string(),
     location: z.string().optional(),
     start: z.coerce.date(),
-    end: z.coerce.date().optional(), // omit for "present"
-    thesis: z.string().optional(),
+    end: z.coerce.date().optional(),
     advisor: z.string().optional(),
-    description: z.string().optional(),
-    order: z.number().default(0),
+    notes: z.array(z.string()).default([]),
   }),
 });
 
@@ -54,12 +63,12 @@ const experience = defineCollection({
   schema: z.object({
     role: z.string(),
     organization: z.string(),
+    kind: z.enum(['research', 'teaching', 'industry']),
     location: z.string().optional(),
     start: z.coerce.date(),
-    end: z.coerce.date().optional(), // omit for "present"
+    end: z.coerce.date().optional(),
     description: z.string().optional(),
     highlights: z.array(z.string()).default([]),
-    order: z.number().default(0),
   }),
 });
 
@@ -69,14 +78,19 @@ const publications = defineCollection({
     title: z.string(),
     authors: z.array(z.string()).min(1),
     venue: z.string(),
+    venueShort: z.string().optional(),
     year: z.number().int(),
-    type: z.enum(['journal', 'conference', 'workshop', 'preprint', 'thesis', 'other']),
+    type: z.enum(['journal', 'conference', 'preprint', 'other']),
+    status: z.enum(['published', 'preprint', 'in-preparation']).default('published'),
+    equalContribution: z.boolean().default(false),
     doi: z.string().optional(),
+    arxiv: z.string().optional(),
+    pmid: z.string().optional(),
     url: link.optional(),
     pdf: z.string().optional(),
     code: link.optional(),
+    app: link.optional(),
     abstract: z.string().optional(),
-    bibtex: z.string().optional(),
     selected: z.boolean().default(false),
   }),
 });
@@ -88,10 +102,21 @@ const talks = defineCollection({
     event: z.string(),
     date: z.coerce.date(),
     location: z.string().optional(),
-    type: z.enum(['talk', 'invited', 'poster', 'workshop', 'panel']),
+    type: z.enum(['talk', 'lightning', 'poster', 'demo', 'invited']),
+    role: z.enum(['presenter', 'organizer']).default('presenter'),
+    description: z.string().optional(),
     url: link.optional(),
-    slides: z.string().optional(),
     video: link.optional(),
+  }),
+});
+
+const awards = defineCollection({
+  loader: yaml('awards'),
+  schema: z.object({
+    title: z.string(),
+    issuer: z.string(),
+    date: z.coerce.date(),
+    description: z.string().optional(),
   }),
 });
 
@@ -99,12 +124,15 @@ const projects = defineCollection({
   loader: yaml('projects'),
   schema: z.object({
     name: z.string(),
+    tagline: z.string(),
     description: z.string(),
-    url: link.optional(),
-    repo: link.optional(),
+    repo: link,
+    docs: link.optional(),
+    app: link.optional(),
+    pypi: z.string().optional(),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
-    order: z.number().default(0),
+    order: z.number().default(99),
   }),
 });
 
@@ -117,4 +145,4 @@ const news = defineCollection({
   }),
 });
 
-export const collections = { profile, education, experience, publications, talks, projects, news };
+export const collections = { profile, research, education, experience, publications, talks, awards, projects, news };

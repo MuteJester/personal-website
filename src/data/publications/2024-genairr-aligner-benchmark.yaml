@@ -1,0 +1,11 @@
+title: An unbiased comparison of immunoglobulin sequence aligners
+authors: [Thomas Konstantinovsky, Ayelet Peres, Pazit Polak, Gur Yaari]
+venue: Briefings in Bioinformatics
+venueShort: Brief. Bioinform.
+year: 2024
+type: journal
+equalContribution: true
+doi: 10.1093/bib/bbae556
+pdf: /papers/2024-genairr-aligner-benchmark.pdf
+code: https://github.com/MuteJester/GenAIRR
+selected: true

@@ -1,0 +1,8 @@
+name: GenAIRR
+tagline: Simulation suite for adaptive immune receptor sequences
+description: Generates realistic immunoglobulin and T-cell receptor sequences with full ground-truth annotations, covering V(D)J recombination, somatic hypermutation, indels and sequencing corruption. C backend, 100+ built-in configurations across 23 species.
+repo: https://github.com/MuteJester/GenAIRR
+pypi: GenAIRR
+tags: [simulation, benchmarking, python, c]
+featured: true
+order: 1

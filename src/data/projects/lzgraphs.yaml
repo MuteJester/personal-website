@@ -1,0 +1,8 @@
+name: LZGraphs
+tagline: Graph models of immune repertoires
+description: Generation probability, diversity and simulation for TCR/BCR repertoires from graph models of decomposed receptor sequences. Home of FlashbackGraph. Python with C acceleration.
+repo: https://github.com/MuteJester/LZGraphs
+pypi: LZGraphs
+tags: [graphs, compression, python]
+featured: true
+order: 3

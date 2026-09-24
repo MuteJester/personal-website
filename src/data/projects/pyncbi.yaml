@@ -1,0 +1,6 @@
+name: PyNCBI
+tagline: Python client for NCBI data retrieval
+description: A small library for exploring and downloading records from NCBI databases.
+repo: https://github.com/MuteJester/PyNCBI
+tags: [python, data-access]
+order: 4

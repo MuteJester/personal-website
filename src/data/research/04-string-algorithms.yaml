@@ -1,0 +1,11 @@
+title: String algorithms
+summary: Reversible decompositions of strings and the structure they expose.
+body: >-
+  Underneath the biology are strings. Flashback is a reversible decomposition
+  that peels maximal runs from both ends of a string at once; a run-pairing
+  theorem gives exact token counts, a palindrome characterisation and an
+  edit-locality result. It is the engine behind FlashbackGraph and a small piece
+  of theory I find beautiful on its own.
+publications: [2026-flashback]
+software: []
+order: 4
