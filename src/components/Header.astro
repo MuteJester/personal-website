@@ -30,4 +30,5 @@ const isActive = (href: string) => path.startsWith(href);
   nav a { color: var(--muted); font-size: var(--text-sm); background-size: 0 1px; }
   nav a:hover, nav a[aria-current='page'] { color: var(--ink); background-size: 100% 1px; }
   nav a[aria-current='page'] { color: var(--accent); }
+  @media (max-width: 720px) { nav { gap: var(--space-4); } }
 </style>
