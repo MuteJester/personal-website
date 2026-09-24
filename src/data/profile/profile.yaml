@@ -4,20 +4,20 @@ affiliation: PhD candidate · Yaari Lab, Faculty of Engineering, Bar-Ilan Univer
 location: Israel
 email: thomas.konstat@gmail.com
 shortBio: >-
-  Computer scientist solving problems in adaptive immune receptor repertoire
-  analysis and biology through probability theory, mathematical modeling, machine
-  learning, data science, and information theory. PhD candidate at Bar-Ilan
-  University.
+  Computer scientist researching the adaptive immune system. Expertise in
+  probability theory, mathematical modeling, machine learning, data science, and
+  information theory, applied to immune receptor repertoire analysis. PhD
+  candidate at Bar-Ilan University.
 bio: >-
-  I am a computer scientist working on the adaptive immune system. My expertise
-  is in solving problems in adaptive immune receptor repertoire (AIRR) analysis,
-  and in biology more broadly, through probability theory and mathematical
-  modeling, machine learning and deep learning, data science, and the tools of
-  compression and information theory. I build representations of very large
-  collections of immune receptor sequences, design algorithms whose behavior can
-  be analyzed and computed exactly, and train models on the results. I hold my
-  methods to the standard of being both rigorous and usable, and I release them
-  as open-source software.
+  I am a computer scientist researching the adaptive immune system. My
+  expertise is in probability theory and mathematical modeling, machine
+  learning and deep learning, data science, and the tools of compression and
+  information theory, which I apply to problems in adaptive immune receptor
+  repertoire (AIRR) analysis and in biology more broadly. I build
+  representations of very large collections of immune receptor sequences,
+  design algorithms whose behavior can be analyzed and computed exactly, and
+  train models on the results. I hold my methods to the standard of being both
+  rigorous and usable, and I release them as open-source software.
 researchInterests:
   - Graph theory
   - Data compression and string algorithms
