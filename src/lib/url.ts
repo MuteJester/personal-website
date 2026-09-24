@@ -1,13 +1,7 @@
 /**
- * Prefix a site-relative path with Astro's configured `base`.
+ * Prefix a site-relative path with the configured `base` (if any).
  * `import.meta.env.BASE_URL` has no trailing slash, so naive string
- * concatenation produces `/basecv/`. Always link through this helper.
- *
- *   withBase('/')            -> '/'
- *   withBase('cv/')          -> '/personal-website/cv/'
- *   withBase('/favicon.svg') -> '/personal-website/favicon.svg'
- *
- * Once the custom domain is configured and `base` is removed, this becomes a no-op.
+ * concatenation would produce `/basecv/`. Always link through this helper.
  */
 export function withBase(path: string): string {
   const base = import.meta.env.BASE_URL.replace(/\/+$/, '');

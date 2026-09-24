@@ -40,7 +40,7 @@ describe('byEndDesc', () => {
       { data: { start: d('2022-01-01') } },
       { data: { start: d('2020-01-01'), end: d('2023-01-01') } },
     ];
-    const sorted = [...items].sort(byEndDesc).map((i) => i.data.start.getFullYear());
+    const sorted = [...items].sort(byEndDesc).map((i) => i.data.start.getUTCFullYear());
     expect(sorted).toEqual([2022, 2020, 2018]);
   });
 });

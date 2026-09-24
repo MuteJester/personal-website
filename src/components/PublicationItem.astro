@@ -7,11 +7,12 @@ interface Props { pub: CollectionEntry<'publications'>; compact?: boolean }
 const { pub, compact = false } = Astro.props;
 const d = pub.data;
 const authors = splitAuthors(d.authors);
+const draft = d.status === 'in-preparation';
 const links = [
-  d.doi && { label: 'DOI', href: doiUrl(d.doi) },
-  d.arxiv && { label: 'arXiv', href: arxivUrl(d.arxiv) },
-  d.pmid && { label: 'PubMed', href: pubmedUrl(d.pmid) },
-  d.pdf && { label: 'PDF', href: withBase(d.pdf) },
+  !draft && d.doi && { label: 'DOI', href: doiUrl(d.doi) },
+  !draft && d.arxiv && { label: 'arXiv', href: arxivUrl(d.arxiv) },
+  !draft && d.pmid && { label: 'PubMed', href: pubmedUrl(d.pmid) },
+  !draft && d.pdf && { label: 'PDF', href: withBase(d.pdf) },
   d.code && { label: 'Code', href: d.code },
   d.app && { label: 'Web app', href: d.app },
   d.url && { label: 'Link', href: d.url },

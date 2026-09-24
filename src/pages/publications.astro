@@ -9,8 +9,13 @@ const inPrep = all.filter((p) => p.data.status === 'in-preparation');
 const rest = all.filter((p) => p.data.status !== 'in-preparation');
 const byYear = (a: (typeof all)[number], b: (typeof all)[number]) =>
   b.data.year - a.data.year || a.data.title.localeCompare(b.data.title);
-const first = rest.filter((p) => p.data.selected).sort(byYear);
-const other = rest.filter((p) => !p.data.selected).sort(byYear);
+const SELF = 'Thomas Konstantinovsky';
+const leadAuthor = (p: (typeof all)[number]) => {
+  const i = p.data.authors.indexOf(SELF);
+  return i === 0 || (i === 1 && p.data.equalContribution);
+};
+const first = rest.filter(leadAuthor).sort(byYear);
+const other = rest.filter((p) => !leadAuthor(p)).sort(byYear);
 ---
 
 <BaseLayout title="Publications" description="Papers and preprints by Thomas Konstantinovsky.">
