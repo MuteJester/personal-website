@@ -3,7 +3,7 @@ import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import SectionHeading from '../components/SectionHeading.astro';
-import PublicationItem from '../components/PublicationItem.astro';
+import PublicationRow from '../components/PublicationRow.astro';
 import { withBase } from '../lib/url';
 
 const profile = await getEntry('profile', 'profile');
@@ -76,11 +76,12 @@ const jsonLd = {
   </div>
 
   <SectionHeading title="Selected publications" />
-  {selected.map((pub) => <PublicationItem pub={pub} compact />)}
+  <div class="pubs">{selected.map((pub) => <PublicationRow pub={pub} />)}</div>
   <p class="more"><a href={withBase('publications/')}>All publications</a></p>
 </BaseLayout>
 
 <style>
+  .pubs { border-bottom: 0; }
   .more { margin-block: var(--space-4) 0; font-size: var(--text-sm); }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: var(--space-4); }
   .card { padding: var(--space-5); border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper-2); display: flex; flex-direction: column; gap: var(--space-2); }
