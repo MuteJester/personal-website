@@ -1,5 +1,5 @@
-title: Graph theory and compression as representations
-summary: Lossless decompositions of strings that turn a sequence collection into a graph with useful structure.
+title: Representing immune repertoires
+summary: Alignment-free graph models of T- and B-cell receptor repertoires, built from lossless decompositions of strings.
 body: >-
   Compression is a lens on structure. A decomposition that is reversible loses
   nothing, and if it is also deterministic and context-free, sequences that share
