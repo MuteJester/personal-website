@@ -1,21 +1,111 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
-import SoftwareCard from '../components/SoftwareCard.astro';
+import { fetchRepoMeta } from '../lib/repoMeta';
+import { formatMonthYear } from '../lib/format';
+import { withBase } from '../lib/url';
+
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const pubs = await getCollection('publications');
+const pubById = new Map(pubs.map((p) => [p.id, p]));
 const research = projects.filter((p) => p.data.kind === 'research');
 const tools = projects.filter((p) => p.data.kind !== 'research');
+const meta = new Map(await Promise.all(projects.map(async (p) => [p.id, await fetchRepoMeta(p.data.repo, p.data.pypi)] as const)));
+
+const linksFor = (p: (typeof projects)[number]) => {
+  const d = p.data;
+  const paper = d.paper ? pubById.get(d.paper) : undefined;
+  return [
+    { label: 'Repository', href: d.repo },
+    d.pypi && { label: 'PyPI', href: `https://pypi.org/project/${d.pypi}/` },
+    d.docs && { label: 'Docs', href: d.docs },
+    d.app && { label: 'Web app', href: d.app },
+    paper && { label: `Paper (${paper.data.venueShort ?? paper.data.venue}, ${paper.data.year})`, href: `${withBase('publications/')}#${paper.id}` },
+  ].filter(Boolean) as { label: string; href: string }[];
+};
+const facts = (id: string) => {
+  const m = meta.get(id) ?? {};
+  return [
+    m.version && `v${m.version}`,
+    m.requiresPython && `Python ${m.requiresPython.replace('>=', '≥ ')}`,
+    m.language,
+    m.license,
+    m.updated && `Updated ${formatMonthYear(m.updated)}`,
+  ].filter(Boolean) as string[];
+};
 ---
-<BaseLayout title="Software" description="Open-source research software for immune repertoire analysis, and a few general-purpose tools.">
+
+<BaseLayout title="Software" description="Open-source software by Thomas Konstantinovsky: GenAIRR, AlignAIR, LZGraphs and other tools.">
   <h1>Software</h1>
-  <p class="lede">Open-source research software from my PhD, plus a few general-purpose tools.</p>
-  <SectionHeading title="Research software" />
-  <div class="cards">{research.map((p) => <SoftwareCard project={p} />)}</div>
-  <SectionHeading title="Other tools" />
-  <div class="cards">{tools.map((p) => <SoftwareCard project={p} />)}</div>
+
+  <section class="features">
+    {research.map((p, i) => (
+      <article class="feature" id={p.id}>
+        <span class="mono num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <div class="main">
+          <h2>{p.data.name}</h2>
+          <p class="tagline">{p.data.tagline}</p>
+          <p class="desc">{p.data.description}</p>
+          <ul class="links">{linksFor(p).map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
+        </div>
+        <aside class="side">
+          {p.data.pypi && <code class="install"><span class="prompt">$</span> pip install {p.data.pypi}</code>}
+          {facts(p.id).length > 0 && <ul class="facts">{facts(p.id).map((f) => <li class="mono">{f}</li>)}</ul>}
+        </aside>
+      </article>
+    ))}
+  </section>
+
+  <h2 class="tools-head">Other tools <span class="mono count">{tools.length}</span></h2>
+  <div class="grid-tools">
+    {tools.map((p) => (
+      <article class="tool" id={p.id}>
+        <h3>{p.data.name}</h3>
+        <p class="ttag">{p.data.tagline}</p>
+        <p class="tdesc">{p.data.description}</p>
+        {facts(p.id).length > 0 && <p class="mono tfacts">{facts(p.id).filter((f) => !f.startsWith('Python')).join(' · ')}</p>}
+        <ul class="links">{linksFor(p).map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
+      </article>
+    ))}
+  </div>
 </BaseLayout>
+
 <style>
-  .lede { color: var(--muted); margin-bottom: var(--space-4); }
-  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: var(--space-4); }
+  h1 { margin-bottom: var(--space-6); }
+  .features { display: grid; }
+  .feature {
+    display: grid; grid-template-columns: 3.5rem minmax(0, 1fr) minmax(14rem, 18rem); column-gap: var(--space-6);
+    padding-block: var(--space-6); border-top: 2px solid var(--ink); scroll-margin-top: var(--space-6);
+  }
+  .feature:first-child { border-top: 0; padding-top: 0; }
+  .num { color: var(--accent); padding-top: 0.6rem; }
+  .feature h2 { font-size: var(--text-h2); margin-bottom: var(--space-1); }
+  .tagline { font-family: var(--font-display); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100; color: var(--muted); margin-bottom: var(--space-3); }
+  .desc { font-size: var(--text-sm); margin-bottom: var(--space-3); }
+  .links { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  .links a { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; }
+  .side { display: grid; gap: var(--space-3); align-content: start; padding-top: 0.4rem; }
+  .install { display: block; font-family: var(--font-mono); font-size: var(--text-sm); color: var(--ink); background: var(--paper-2); border: 1px solid var(--rule); border-radius: 8px; padding: var(--space-3) var(--space-4); white-space: nowrap; overflow-x: auto; }
+  .prompt { color: var(--accent); margin-right: 0.4rem; user-select: none; }
+  .facts { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); }
+  .facts li { font-size: 0.68rem; }
+
+  .tools-head { display: flex; align-items: baseline; gap: var(--space-3); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100, 'opsz' 24; margin-top: var(--space-7); padding-bottom: var(--space-3); border-bottom: 2px solid var(--ink); }
+  .count { color: var(--muted); }
+  .grid-tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 0 var(--space-6); }
+  .tool { padding-block: var(--space-4); border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: var(--space-1); }
+  .tool h3 { font-family: var(--font-body); font-weight: 600; font-size: var(--text-base); }
+  .ttag { color: var(--muted); font-size: var(--text-sm); margin: 0; }
+  .tdesc { font-size: var(--text-sm); margin: 0; flex: 1; }
+  .tfacts { font-size: 0.68rem; margin: var(--space-1) 0 0; text-transform: none; letter-spacing: 0.02em; }
+  .tool .links { margin-top: var(--space-2); }
+  @media (max-width: 860px) {
+    .feature { grid-template-columns: 3.5rem minmax(0, 1fr); row-gap: var(--space-4); }
+    .side { grid-column: 2; padding-top: 0; }
+  }
+  @media (max-width: 720px) {
+    .feature { grid-template-columns: minmax(0, 1fr); }
+    .num { padding-top: 0; }
+    .side { grid-column: 1; }
+  }
 </style>

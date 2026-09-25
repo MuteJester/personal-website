@@ -4,4 +4,4 @@ eventShort: AIRR VIII
 date: 2026-06-09
 location: Yale University, New Haven, USA
 type: demo
-description: Live demonstration of GenAIRR, including the C backend and the 23-species configurations.
+description: Live demonstration of GenAIRR, including the Rust simulation kernel and the 23-species configurations.
