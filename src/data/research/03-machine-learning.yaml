@@ -1,0 +1,14 @@
+title: Machine learning and deep learning for sequence analysis
+summary: Multi-task neural models trained on simulated ground truth, with uncertainty that can be trusted.
+body: >-
+  Where no closed form exists I train models, and I care as much about their
+  calibration as about their accuracy. AlignAIR is the main example: a multi-task
+  deep network that assigns germline genes and boundaries to antibody sequences and
+  returns likelihoods that track the true probability of being right. Before that,
+  I worked on natural-language models over source code and on machine-learning
+  analysis of DNA-methylation data, and I bring the same toolkit of representation
+  learning, sequence models and careful evaluation to whichever domain the
+  problem lives in.
+publications: [2025-alignair, 2022-epigenetic-age-deconvolution]
+software: [alignair]
+order: 3

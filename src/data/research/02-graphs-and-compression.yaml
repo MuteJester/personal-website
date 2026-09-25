@@ -1,0 +1,14 @@
+title: Graph theory and compression as representations
+summary: Lossless decompositions of strings that turn a sequence collection into a graph with useful structure.
+body: >-
+  Compression is a lens on structure. A decomposition that is reversible loses
+  nothing, and if it is also deterministic and context-free, sequences that share
+  structure share paths in a graph. I study such decompositions and the graphs
+  they induce, from Lempel-Ziv parsings to Flashback, a bilateral run-peeling
+  decomposition with an exact run-pairing theorem, and I use information-theoretic
+  quantities on these graphs as features, distances and diversity measures. The
+  same ideas apply to any large collection of discrete sequences, not only to
+  immune receptors.
+publications: [2026-flashback, 2023-lzgraphs, 2021-bigram-graph-attributes]
+software: [lzgraphs, bigramgraph]
+order: 2

@@ -1,0 +1,14 @@
+title: Probabilistic modeling of biological sequences
+summary: Generative and statistical models of sequence collections, with quantities that can be computed exactly rather than estimated.
+body: >-
+  I am interested in models that assign probabilities to biological sequences and
+  to whole collections of them, and in what those probabilities reveal: how
+  diverse a population is, how likely a sequence is to arise, and which sequences
+  are anomalous. My preference is for models on which the interesting quantities,
+  such as generation probabilities, entropy and Hill diversity, follow from the
+  model structure by dynamic programming instead of sampling or extrapolation. This
+  is the thread that runs from LZGraphs to FlashbackGraph, where a graph built from
+  billions of observed sequences yields exact repertoire-level statistics.
+publications: [2023-lzgraphs]
+software: [lzgraphs]
+order: 1

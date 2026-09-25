@@ -1,0 +1,13 @@
+title: Simulation and benchmarking
+summary: Simulators with full ground truth, and community benchmarks, so that methods are compared on equal terms.
+body: >-
+  Methods are only as good as their evaluation. Because ground truth is usually
+  unavailable in experimental biological data, I build simulators that produce it:
+  GenAIRR generates annotated immune-receptor sequences with realistic
+  recombination, mutation and sequencing error across 23 species. It underpins the
+  training of AlignAIR, a systematic comparison of immunoglobulin aligners, and
+  community benchmarks such as the Adaptive Immune Profiling Challenge, which I
+  co-organized.
+publications: [2024-genairr-aligner-benchmark]
+software: [genairr]
+order: 5

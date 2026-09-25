@@ -31,7 +31,7 @@ const projById = new Map(projects.map((p) => [p.id, p]));
   </section>
 
 
-  <h2 class="areas-head">Research areas <span class="mono count">{areas.length}</span></h2>
+  <h2 class="areas-head">Research interests <span class="mono count">{areas.length}</span></h2>
   <div class="areas">
     {areas.map((area, i) => {
       const papers = area.data.publications.map((id) => pubById.get(id)).filter((p): p is NonNullable<typeof p> => Boolean(p));

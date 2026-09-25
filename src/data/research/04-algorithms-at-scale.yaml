@@ -1,0 +1,12 @@
+title: Algorithm design for very large sequence spaces
+summary: Data structures and algorithms that make billions of sequences searchable, comparable and compressible.
+body: >-
+  Much of my work is engineering for scale: a data structure and server for
+  membership queries against tens of thousands of repertoires (PHOENIX, filed as a
+  US provisional patent), linear-time decompositions, and C-accelerated
+  implementations behind the Python packages. I aim for algorithms that are as
+  efficient as the problem allows and that someone outside the field can run without
+  reading the paper first.
+publications: [2026-flashback]
+software: [lzgraphs, genairr]
+order: 4
