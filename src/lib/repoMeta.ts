@@ -19,6 +19,8 @@ async function getJson(url: string, headers: Record<string, string> = {}): Promi
 
 export async function fetchRepoMeta(repoUrl: string, pypi?: string): Promise<RepoMeta> {
   const meta: RepoMeta = {};
+  // Only fetch during production builds; the dev server would repeat these lookups on every request.
+  if (import.meta.env.DEV || process.env.SKIP_REPO_META) return meta;
   const m = repoUrl.match(/github\.com\/([^/]+)\/([^/#?]+)/);
   if (m) {
     const gh = await getJson(`https://api.github.com/repos/${m[1]}/${m[2]}`, { Accept: 'application/vnd.github+json' });
