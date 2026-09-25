@@ -41,8 +41,7 @@ const spans = [
   ...teaching.map((e) => ({ label: e.data.role.replace(/\s*\(.*\)$/, ''), sub: e.data.organization.split(',')[0], start: e.data.start, end: e.data.end, kind: 'teaching' })),
   ...industry.map((e) => ({ label: e.data.role, sub: e.data.organization, start: e.data.start, end: e.data.end, kind: 'industry' })),
 ];
-const kindOrder: Record<string, number> = { education: 0, research: 1, teaching: 2, industry: 3 };
-spans.sort((a, b) => kindOrder[a.kind] - kindOrder[b.kind] || a.start.getTime() - b.start.getTime());
+spans.sort((a, b) => a.start.getTime() - b.start.getTime());
 const yr = (d: Date) => d.getUTCFullYear() + d.getUTCMonth() / 12;
 const t0 = Math.floor(Math.min(...spans.map((s) => yr(s.start))));
 const t1 = Math.ceil(Math.max(...spans.map((s) => yr(s.end ?? now)), yr(now)) + 0.99);
@@ -209,7 +208,6 @@ const tabs = [
   .kind-research .bar { background: var(--chart-research); }
   .kind-teaching .bar { background: var(--chart-teaching); }
   .kind-industry .bar { background: var(--chart-industry); }
-  .lane + .lane.kind-research:not(.kind-research + .kind-research), .kind-education + .kind-research, .kind-research + .kind-teaching, .kind-teaching + .kind-industry { margin-top: 0.45rem; }
   .legend { list-style: none; margin: var(--space-3) 0 0; padding: 0; display: flex; gap: var(--space-4); flex-wrap: wrap; }
   .legend li::before { content: ''; display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 2px; margin-right: 0.35rem; vertical-align: -1px; }
   .legend .kind-education::before { background: var(--chart-education); }
