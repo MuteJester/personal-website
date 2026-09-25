@@ -7,6 +7,10 @@
   --rule: #dedbd3;
   --accent: #2b35c7;
   --accent-soft: rgb(43 53 199 / 0.08);
+  --chart-education: #1a1a1c;
+  --chart-research: #2b35c7;
+  --chart-teaching: #1a8a7a;
+  --chart-industry: #c2770f;
 
   --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --font-body: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -48,6 +52,10 @@
     --rule: #2c2c30;
     --accent: #8d95ff;
     --accent-soft: rgb(141 149 255 / 0.12);
+    --chart-education: #ebe8e1;
+    --chart-research: #8d95ff;
+    --chart-teaching: #4fd1c0;
+    --chart-industry: #e5a53f;
   }
 }
 
