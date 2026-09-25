@@ -1,8 +1,9 @@
 ---
 import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import SectionHeading from '../components/SectionHeading.astro';
 import TimelineItem from '../components/TimelineItem.astro';
+import PublicationRow from '../components/PublicationRow.astro';
+import PatentRow from '../components/PatentRow.astro';
 import PublicationItem from '../components/PublicationItem.astro';
 import { byDateDesc, byEndDesc, formatDateRange, formatMonthYear, isLeadAuthor } from '../lib/format';
 import { withBase } from '../lib/url';
@@ -28,13 +29,38 @@ const leadAuthor = (p: Pub) => isLeadAuthor(p.data.authors, p.data.equalContribu
 const published = pubs.filter((p) => p.data.status !== 'in-preparation');
 const firstAuthor = published.filter(leadAuthor).sort(byYear);
 const coauthored = published.filter((p) => !leadAuthor(p)).sort(byYear);
-
 const typeLabel: Record<string, string> = { talk: 'Talk', 'short-talk': 'Short talk', lightning: 'Lightning talk', poster: 'Poster', demo: 'Demo', invited: 'Invited talk' };
+const talkWhen = (d: { date: Date; yearOnly: boolean }) => (d.yearOnly ? String(d.date.getUTCFullYear()) : formatMonthYear(d.date));
 const { links, email } = profile.data;
+
+// --- Timeline chart (education + positions) ---
+const now = new Date();
+const spans = [
+  ...education.map((e) => ({ label: e.data.degree.replace(/\s*\(.*\)$/, ''), sub: e.data.institution, start: e.data.start, end: e.data.end, kind: 'education' })),
+  ...research.map((e) => ({ label: e.data.role.replace(/\s*\(.*\)$/, ''), sub: e.data.organization.split(',')[0], start: e.data.start, end: e.data.end, kind: 'research' })),
+  ...teaching.map((e) => ({ label: e.data.role.replace(/\s*\(.*\)$/, ''), sub: e.data.organization.split(',')[0], start: e.data.start, end: e.data.end, kind: 'teaching' })),
+  ...industry.map((e) => ({ label: e.data.role, sub: e.data.organization, start: e.data.start, end: e.data.end, kind: 'industry' })),
+].sort((a, b) => a.start.getTime() - b.start.getTime());
+const yr = (d: Date) => d.getUTCFullYear() + d.getUTCMonth() / 12;
+const t0 = Math.floor(Math.min(...spans.map((s) => yr(s.start))));
+const t1 = Math.ceil(Math.max(...spans.map((s) => yr(s.end ?? now)), yr(now)) + 0.99);
+const years = Array.from({ length: t1 - t0 }, (_, i) => t0 + i);
+const pct = (t: number) => ((t - t0) / (t1 - t0)) * 100;
+const bar = (s: (typeof spans)[number]) => ({ left: pct(yr(s.start)), width: Math.max(pct(yr(s.end ?? now)) - pct(yr(s.start)), 1.5), open: !s.end });
+
+const tabs = [
+  { id: 'education', label: 'Education', n: education.length },
+  { id: 'positions', label: 'Positions', n: research.length + industry.length + teaching.length },
+  { id: 'publications', label: 'Publications', n: published.length },
+  { id: 'patents', label: 'Patents', n: patents.length },
+  { id: 'funding', label: 'Funding & awards', n: allAwards.length },
+  { id: 'talks', label: 'Talks & posters', n: talks.length },
+  { id: 'service', label: 'Service', n: service.length },
+];
 ---
 
 <BaseLayout title="CV" description="Curriculum vitae of Thomas Konstantinovsky.">
-  <div class="top">
+  <header class="top">
     <div>
       <h1>Curriculum vitae</h1>
       <p class="contact">
@@ -42,81 +68,181 @@ const { links, email } = profile.data;
         {links.orcid && <> · <a href={links.orcid} rel="noopener">ORCID</a></>}
         {links.scholar && <> · <a href={links.scholar} rel="noopener">Google Scholar</a></>}
       </p>
+      <p class="mono printed">Generated from thomaskon.com on {new Date().toISOString().slice(0, 10)}</p>
     </div>
-    {profile.data.cvPdf && <a class="mono download" href={withBase(profile.data.cvPdf)}>Download PDF</a>}
-    <p class="mono printed">Generated from thomaskon.com on {new Date().toISOString().slice(0, 10)}</p>
-  </div>
+    {profile.data.cvPdf && <a class="download" href={withBase(profile.data.cvPdf)}><span class="mono">Download PDF</span></a>}
+  </header>
 
-  <SectionHeading title="Education" />
-  {education.map(({ data }) => (
-    <TimelineItem
-      when={formatDateRange(data.start, data.end)}
-      title={`${data.degree} in ${data.field}`}
-      subtitle={`${data.institution}${data.location ? ` · ${data.location}` : ''}`}
-      meta={data.advisor && `Advisor: ${data.advisor}`}
-      notes={data.notes}
-    />
-  ))}
+  <ul class="glance">
+    <li><span class="n">{published.length}</span><span class="mono">publications</span></li>
+    <li><span class="n">{patents.length}</span><span class="mono">patents</span></li>
+    <li><span class="n">{talks.length}</span><span class="mono">talks and posters</span></li>
+    <li><span class="n">{funding.length}</span><span class="mono">fellowships and scholarships</span></li>
+  </ul>
 
-  <SectionHeading title="Research positions" />
-  {research.map(({ data }) => (
-    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} notes={data.highlights} />
-  ))}
+  <section class="chart" aria-label="Timeline of education and positions">
+    <div class="axis">{years.map((y) => <span style={`left:${pct(y)}%`}>{y}</span>)}</div>
+    <ol class="lanes" style={`--nyears:${years.length}`}>
+      {spans.map((s) => {
+        const b = bar(s);
+        return (
+          <li class={`lane kind-${s.kind}`}>
+            <span class={`bar-label${b.left > 55 ? ' anchor-right' : ''}`} style={b.left > 55 ? `right:${100 - b.left - b.width}%` : `left:${b.left}%`}>
+              {s.label}<span class="bar-sub"> · {s.sub}</span>
+            </span>
+            <span class="bar" style={`left:${b.left}%;width:${b.width}%`} data-open={b.open ? '' : undefined}></span>
+          </li>
+        );
+      })}
+    </ol>
+    <ul class="legend mono">
+      <li class="kind-education">Education</li><li class="kind-research">Research</li><li class="kind-teaching">Teaching</li><li class="kind-industry">Industry</li>
+    </ul>
+  </section>
 
-  <SectionHeading title="Publications" />
-  <p class="sub mono">First author</p>
-  {firstAuthor.map((pub) => <PublicationItem pub={pub} compact />)}
-  <p class="sub mono">Co-authored</p>
-  {coauthored.map((pub) => <PublicationItem pub={pub} compact />)}
+  <nav class="tabs" aria-label="CV sections">
+    {tabs.map((t, i) => (
+      <>
+        <input type="radio" name="cvtab" id={`tab-${t.id}`} checked={i === 0} />
+        <label for={`tab-${t.id}`}>{t.label} <span class="mono">{t.n}</span></label>
+      </>
+    ))}
+  </nav>
 
-  <SectionHeading title="Patents" />
-  {patents.map(({ data }) => (
-    <TimelineItem
-      when={formatMonthYear(data.date)}
-      title={data.title}
-      subtitle={data.status === 'granted' ? `${data.number}, granted` : `${data.note ?? 'Patent application'}, filed`}
-      meta={`Inventors: ${data.inventors.join(', ')}${data.assignee ? ` · ${data.assignee}` : ''}`}
-    />
-  ))}
+  <section class="panel" id="panel-education">
+    <h2 class="print-only">Education</h2>
+    {education.map(({ data }) => (
+      <TimelineItem when={formatDateRange(data.start, data.end)} title={`${data.degree} in ${data.field}`} subtitle={`${data.institution}${data.location ? ` · ${data.location}` : ''}`} meta={data.advisor && `Advisor: ${data.advisor}`} notes={data.notes} />
+    ))}
+  </section>
 
-  <SectionHeading title="Funding and fellowships" />
-  {funding.map(({ data }) => (
-    <TimelineItem when={data.end ? formatDateRange(data.date, data.end) : formatMonthYear(data.date)} title={data.title} subtitle={data.issuer} meta={data.kind === 'fellowship' ? 'Fellowship' : 'Scholarship'} description={data.description} />
-  ))}
+  <section class="panel" id="panel-positions">
+    <h2 class="print-only">Positions</h2>
+    <p class="sub mono">Research</p>
+    {research.map(({ data }) => (
+      <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} notes={data.highlights} />
+    ))}
+    <p class="sub mono">Teaching</p>
+    {teaching.map(({ data }) => (
+      <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} notes={data.highlights} />
+    ))}
+    <p class="sub mono">Industry</p>
+    {industry.map(({ data }) => (
+      <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} notes={data.highlights} />
+    ))}
+  </section>
 
-  <SectionHeading title="Awards" />
-  {awards.map(({ data }) => (
-    <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={data.issuer} description={data.description} />
-  ))}
+  <section class="panel" id="panel-publications">
+    <h2 class="print-only">Publications</h2>
+    <p class="sub mono">First author</p>
+    <div class="rows screen-only">{firstAuthor.map((pub) => <PublicationRow pub={pub} />)}</div>
+    <div class="print-only">{firstAuthor.map((pub) => <PublicationItem pub={pub} compact />)}</div>
+    <p class="sub mono">Co-authored</p>
+    <div class="rows screen-only">{coauthored.map((pub) => <PublicationRow pub={pub} />)}</div>
+    <div class="print-only">{coauthored.map((pub) => <PublicationItem pub={pub} compact />)}</div>
+  </section>
 
-  <SectionHeading title="Talks and posters" />
-  {talks.map(({ data }) => (
-    <TimelineItem when={data.yearOnly ? String(data.date.getUTCFullYear()) : formatMonthYear(data.date)} title={data.title} subtitle={`${data.event}${data.location ? ` · ${data.location}` : ''}`} meta={typeLabel[data.type]} />
-  ))}
+  <section class="panel" id="panel-patents">
+    <h2 class="print-only">Patents</h2>
+    <div class="rows screen-only">{patents.map((p) => <PatentRow patent={p} />)}</div>
+    <div class="print-only">
+      {patents.map(({ data }) => (
+        <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={data.status === 'granted' ? `${data.number}, granted` : `${data.note ?? 'Patent application'}, filed`} meta={`Inventors: ${data.inventors.join(', ')}${data.assignee ? ` · ${data.assignee}` : ''}`} />
+      ))}
+    </div>
+  </section>
 
-  <SectionHeading title="Service" />
-  {service.map(({ data }) => (
-    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} />
-  ))}
+  <section class="panel" id="panel-funding">
+    <h2 class="print-only">Funding and awards</h2>
+    <p class="sub mono">Fellowships and scholarships</p>
+    {funding.map(({ data }) => (
+      <TimelineItem when={data.end ? formatDateRange(data.date, data.end) : formatMonthYear(data.date)} title={data.title} subtitle={data.issuer} meta={data.kind === 'fellowship' ? 'Fellowship' : 'Scholarship'} description={data.description} />
+    ))}
+    <p class="sub mono">Awards</p>
+    {awards.map(({ data }) => (
+      <TimelineItem when={formatMonthYear(data.date)} title={data.title} subtitle={data.issuer} description={data.description} />
+    ))}
+  </section>
 
-  <SectionHeading title="Teaching" />
-  {teaching.map(({ data }) => (
-    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} notes={data.highlights} />
-  ))}
+  <section class="panel" id="panel-talks">
+    <h2 class="print-only">Talks and posters</h2>
+    {talks.map(({ data }) => (
+      <TimelineItem when={talkWhen(data)} title={data.title} subtitle={`${data.event}${data.location ? ` · ${data.location}` : ''}`} meta={typeLabel[data.type]} />
+    ))}
+  </section>
 
-  <SectionHeading title="Industry" />
-  {industry.map(({ data }) => (
-    <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} notes={data.highlights} />
-  ))}
+  <section class="panel" id="panel-service">
+    <h2 class="print-only">Service</h2>
+    {service.map(({ data }) => (
+      <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} />
+    ))}
+  </section>
 </BaseLayout>
 
 <style>
-  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-4); }
-  .contact { color: var(--muted); font-size: var(--text-sm); margin-top: var(--space-2); }
-  .sub { margin: var(--space-4) 0 0; }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-4); flex-wrap: wrap; margin-bottom: var(--space-5); }
+  .contact { color: var(--muted); font-size: var(--text-sm); margin: var(--space-2) 0 0; max-width: none; }
   .printed { display: none; }
+  .download { display: inline-flex; align-items: center; padding: 0.55rem 1rem; border: 1px solid var(--ink); border-radius: 999px; text-decoration: none; color: var(--ink); transition: background-color var(--ease), color var(--ease); }
+  .download .mono { color: inherit; }
+  .download:hover { background: var(--ink); color: var(--paper); }
+
+  .glance { list-style: none; margin: 0 0 var(--space-6); padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: var(--space-3); }
+  .glance li { border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-3) var(--space-4); display: grid; gap: 0.1rem; background: var(--paper-2); }
+  .glance .n { font-family: var(--font-display); font-size: 1.9rem; line-height: 1; font-variation-settings: 'SOFT' 100, 'opsz' 48; }
+
+  .chart { margin-bottom: var(--space-6); padding: var(--space-4) var(--space-4) var(--space-3); border: 1px solid var(--rule); border-radius: var(--radius); }
+  .axis { position: relative; height: 1.2rem; margin-bottom: var(--space-2); border-bottom: 1px solid var(--rule); }
+  .axis span { position: absolute; top: 0; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); }
+  .lanes { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.35rem; background-image: repeating-linear-gradient(to right, var(--rule) 0 1px, transparent 1px 100%); background-size: calc(100% / var(--nyears, 10)) 100%; }
+  .lanes { gap: 0.5rem; }
+  .lane { position: relative; height: 1.7rem; }
+  .bar { position: absolute; bottom: 0; height: 0.45rem; border-radius: 3px; background: var(--muted); }
+  .bar[data-open] { border-top-right-radius: 0; border-bottom-right-radius: 0; mask-image: linear-gradient(to right, #000 85%, transparent); }
+  .bar-label { position: absolute; top: 0; font-size: 0.72rem; line-height: 1.1rem; color: var(--ink); font-weight: 600; white-space: nowrap; }
+  .bar-label.anchor-right { text-align: right; }
+  .bar-sub { font-weight: 400; color: var(--muted); }
+  .kind-education .bar { background: var(--ink); }
+  .kind-research .bar { background: var(--accent); }
+  .kind-teaching .bar { background: color-mix(in srgb, var(--accent) 55%, var(--paper)); }
+  .kind-industry .bar { background: var(--muted); }
+  .legend { list-style: none; margin: var(--space-3) 0 0; padding: 0; display: flex; gap: var(--space-4); flex-wrap: wrap; }
+  .legend li::before { content: ''; display: inline-block; width: 0.7rem; height: 0.7rem; border-radius: 2px; margin-right: 0.35rem; vertical-align: -1px; background: var(--muted); }
+  .legend .kind-education::before { background: var(--ink); }
+  .legend .kind-research::before { background: var(--accent); }
+  .legend .kind-teaching::before { background: color-mix(in srgb, var(--accent) 55%, var(--paper)); }
+
+  .tabs { display: flex; flex-wrap: wrap; gap: 0.3rem; border-bottom: 2px solid var(--ink); padding-bottom: 0.5rem; margin-bottom: var(--space-2); }
+  .tabs input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .tabs label { cursor: pointer; font-size: var(--text-sm); padding: 0.35rem 0.8rem; border-radius: 999px; color: var(--muted); display: inline-flex; gap: 0.4rem; align-items: baseline; transition: background-color var(--ease), color var(--ease); }
+  .tabs label .mono { font-size: 0.68rem; }
+  .tabs label:hover { color: var(--ink); background: var(--accent-soft); }
+  .tabs input:checked + label { background: var(--ink); color: var(--paper); }
+  .tabs input:checked + label .mono { color: var(--paper); opacity: 0.7; }
+  .tabs input:focus-visible + label { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .panel { display: none; }
+  :global(main):has(#tab-education:checked) #panel-education,
+  :global(main):has(#tab-positions:checked) #panel-positions,
+  :global(main):has(#tab-publications:checked) #panel-publications,
+  :global(main):has(#tab-patents:checked) #panel-patents,
+  :global(main):has(#tab-funding:checked) #panel-funding,
+  :global(main):has(#tab-talks:checked) #panel-talks,
+  :global(main):has(#tab-service:checked) #panel-service { display: block; }
+  .print-only { display: none; }
+  .screen-only { display: block; }
+  .sub { margin: var(--space-5) 0 0; }
+  .rows :global(details.row:first-of-type) { border-top: 0; }
+
+  @media (max-width: 720px) {
+    .bar-sub { display: none; }
+    .glance .n { font-size: 1.5rem; }
+  }
   @media print {
-    .download { display: none; }
-    .printed { display: block; width: 100%; margin: 0; }
+    .download, .glance, .chart, .tabs { display: none !important; }
+    .printed { display: block; margin: 0; }
+    .panel { display: block !important; break-inside: auto; margin-top: 1rem; }
+    .print-only { display: block; font-size: var(--text-h2); border-top: 1px solid var(--rule); padding-top: 0.6rem; }
+    .screen-only { display: none !important; }
   }
 </style>
