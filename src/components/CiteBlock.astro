@@ -1,0 +1,21 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { toBibtex } from '../lib/bibtex';
+interface Props { pub: CollectionEntry<'publications'> }
+const { data } = Astro.props.pub;
+const bib = toBibtex(data);
+---
+<details class="cite">
+  <summary>Cite</summary>
+  <pre tabindex="0"><code>{bib}</code></pre>
+  <p class="hint">Click the entry to select it, then copy.</p>
+</details>
+<style>
+  .cite { margin-top: var(--space-2); }
+  .cite summary { list-style: none; cursor: pointer; display: inline-block; font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em; color: var(--accent); }
+  .cite summary::-webkit-details-marker { display: none; }
+  .cite summary::after { content: ' +'; }
+  .cite[open] summary::after { content: ' \2212'; }
+  .cite pre { margin: var(--space-2) 0 0; padding: var(--space-3) var(--space-4); background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; font-family: var(--font-mono); font-size: var(--text-xs); line-height: 1.5; overflow-x: auto; white-space: pre; user-select: all; -webkit-user-select: all; }
+  .hint { margin: var(--space-1) 0 0; font-size: var(--text-xs); color: var(--muted); }
+</style>

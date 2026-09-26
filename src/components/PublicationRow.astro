@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { arxivUrl, doiUrl, pubmedUrl, splitAuthors } from '../lib/format';
 import { withBase } from '../lib/url';
+import CiteBlock from './CiteBlock.astro';
 
 interface Props { pub: CollectionEntry<'publications'> }
 const { pub } = Astro.props;
@@ -41,6 +42,7 @@ const tag = d.status === 'preprint' ? 'Preprint' : undefined;
     {links.length > 0 && (
       <ul class="links">{links.map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
     )}
+    {!draft && <CiteBlock pub={pub} />}
   </div>
 </details>
 
