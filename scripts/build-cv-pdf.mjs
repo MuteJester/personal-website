@@ -25,11 +25,11 @@ async function waitFor(url, ms = 20000) {
 
 const chrome = findChrome();
 if (!chrome) { console.warn('[cv-pdf] no Chrome found; skipping PDF generation'); process.exit(0); }
-if (!existsSync('dist/cv/index.html')) { console.warn('[cv-pdf] dist/cv/index.html missing; skipping'); process.exit(0); }
+if (!existsSync('dist/cv-print/index.html')) { console.warn('[cv-pdf] dist/cv-print/index.html missing; skipping'); process.exit(0); }
 
 const preview = spawn('npx', ['astro', 'preview', '--port', String(PORT), '--host', '127.0.0.1'], { stdio: 'ignore' });
 try {
-  const url = `http://127.0.0.1:${PORT}/cv/?print`;
+  const url = `http://127.0.0.1:${PORT}/cv-print/`;
   await waitFor(url);
   execFileSync(chrome, [
     '--headless=new', '--disable-gpu', '--no-sandbox', '--hide-scrollbars', '--run-all-compositor-stages-before-draw',

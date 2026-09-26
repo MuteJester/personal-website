@@ -1,0 +1,223 @@
+---
+// Print-only layout used to generate the CV PDF at build time. Not linked from the site.
+import '@fontsource-variable/fraunces/full.css';
+import '@fontsource-variable/inter';
+import { getCollection, getEntry } from 'astro:content';
+import { byDateDesc, byEndDesc, formatDateRange, formatMonthYear, isLeadAuthor } from '../lib/format';
+
+const SELF = 'Thomas Konstantinovsky';
+const profile = await getEntry('profile', 'profile');
+if (!profile) throw new Error('Missing profile');
+const education = (await getCollection('education')).sort(byEndDesc);
+const experience = await getCollection('experience');
+const research = experience.filter((e) => e.data.kind === 'research').sort(byEndDesc);
+const industry = experience.filter((e) => e.data.kind === 'industry').sort(byEndDesc);
+const teaching = experience.filter((e) => e.data.kind === 'teaching').sort(byEndDesc);
+const allAwards = (await getCollection('awards')).sort(byDateDesc);
+const funding = allAwards.filter((a) => a.data.kind !== 'award');
+const awards = allAwards.filter((a) => a.data.kind === 'award');
+const talks = (await getCollection('talks')).sort(byDateDesc);
+const patents = (await getCollection('patents')).sort(byDateDesc);
+const service = (await getCollection('service')).sort(byEndDesc);
+const pubs = await getCollection('publications');
+type Pub = (typeof pubs)[number];
+const byYear = (a: Pub, b: Pub) => b.data.year - a.data.year || a.data.title.localeCompare(b.data.title);
+const leadAuthor = (p: Pub) => isLeadAuthor(p.data.authors, p.data.equalContribution, p.data.equalContributors, SELF);
+const published = pubs.filter((p) => p.data.status !== 'in-preparation');
+const firstAuthor = published.filter(leadAuthor).sort(byYear);
+const coauthored = published.filter((p) => !leadAuthor(p)).sort(byYear);
+const inPrep = pubs.filter((p) => p.data.status === 'in-preparation').sort(byYear);
+const typeLabel: Record<string, string> = { talk: 'Talk', 'short-talk': 'Short talk', lightning: 'Lightning talk', poster: 'Poster', demo: 'Demo', invited: 'Invited talk' };
+const talkWhen = (d: { date: Date; yearOnly: boolean }) => (d.yearOnly ? String(d.date.getUTCFullYear()) : formatMonthYear(d.date));
+const { links, email } = profile.data;
+const today = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+const cite = (p: Pub) => {
+  const authors = p.data.authors.map((a, i) => (a === SELF ? `<b>${a}</b>` : a) + (p.data.equalContribution && i < p.data.equalContributors ? '*' : '')).join(', ');
+  const id = p.data.doi ? `doi:${p.data.doi}` : p.data.arxiv ? `arXiv:${p.data.arxiv}` : '';
+  const status = p.data.status === 'preprint' ? ' (preprint)' : '';
+  return `${authors}. ${p.data.title}. <i>${p.data.venue}</i>, ${p.data.year}${status}.${id ? ` ${id}` : ''}`;
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Thomas Konstantinovsky · CV</title>
+  </head>
+  <body>
+    <header class="top">
+      <h1>{profile.data.name}</h1>
+      <p class="role">{profile.data.affiliation}</p>
+      <p class="contact">
+        <a href={`mailto:${email}`}>{email}</a> · <a href="https://thomaskon.com">thomaskon.com</a>
+        {links.orcid && <> · ORCID <a href={links.orcid}>{links.orcid.replace('https://orcid.org/', '')}</a></>}
+        {links.scholar && <> · <a href={links.scholar}>Google Scholar</a></>}
+        {links.github && <> · <a href={links.github}>GitHub</a></>}
+      </p>
+    </header>
+
+    <section>
+      <h2>Research interests</h2>
+      <p class="prose">{profile.data.researchInterests.join(' · ')}</p>
+    </section>
+
+    <section>
+      <h2>Education</h2>
+      {education.map(({ data }) => (
+        <div class="row">
+          <div class="when">{formatDateRange(data.start, data.end)}</div>
+          <div class="what">
+            <p class="t">{data.degree} in {data.field}</p>
+            <p class="s">{data.institution}{data.location ? `, ${data.location}` : ''}{data.advisor ? ` · Advisor: ${data.advisor}` : ''}</p>
+            {data.notes.length > 0 && <ul>{data.notes.map((n) => <li>{n}</li>)}</ul>}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Research positions</h2>
+      {research.map(({ data }) => (
+        <div class="row">
+          <div class="when">{formatDateRange(data.start, data.end)}</div>
+          <div class="what">
+            <p class="t">{data.role}</p>
+            <p class="s">{data.organization}</p>
+            {data.description && <p class="d">{data.description}</p>}
+            {data.highlights.length > 0 && <ul>{data.highlights.map((n) => <li>{n}</li>)}</ul>}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section class="pubs">
+      <h2>Publications</h2>
+      <p class="note">* joint first authors</p>
+      <h3>First-author papers</h3>
+      <ol class="cites">{firstAuthor.map((p) => <li set:html={cite(p)} />)}</ol>
+      <h3>Co-authored papers</h3>
+      <ol class="cites" start={firstAuthor.length + 1}>{coauthored.map((p) => <li set:html={cite(p)} />)}</ol>
+      {inPrep.length > 0 && (
+        <>
+          <h3>In preparation</h3>
+          <ul class="cites plain">{inPrep.map((p) => <li set:html={cite(p).replace(/<i>In preparation<\/i>, \d{4}\./, 'manuscript in preparation.')} />)}</ul>
+        </>
+      )}
+    </section>
+
+    <section>
+      <h2>Patents</h2>
+      {patents.map(({ data }) => (
+        <div class="row">
+          <div class="when">{formatMonthYear(data.date)}</div>
+          <div class="what">
+            <p class="t">{data.title}</p>
+            <p class="s">{data.status === 'granted' ? `${data.number}, granted` : `${data.note ?? 'Patent application'}, filed`}{data.assignee ? ` · ${data.assignee}` : ''} · Inventors: {data.inventors.join(', ')}</p>
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Funding and fellowships</h2>
+      {funding.map(({ data }) => (
+        <div class="row">
+          <div class="when">{data.end ? formatDateRange(data.date, data.end) : formatMonthYear(data.date)}</div>
+          <div class="what"><p class="t">{data.title}</p><p class="s">{data.issuer}</p></div>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Awards</h2>
+      {awards.map(({ data }) => (
+        <div class="row">
+          <div class="when">{formatMonthYear(data.date)}</div>
+          <div class="what"><p class="t">{data.title}</p><p class="s">{data.issuer}</p></div>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Talks and posters</h2>
+      {talks.map(({ data }) => (
+        <div class="row">
+          <div class="when">{talkWhen(data)}</div>
+          <div class="what">
+            <p class="t">{data.title} <span class="tag">{typeLabel[data.type]}</span></p>
+            <p class="s">{data.event}{data.location ? `, ${data.location}` : ''}{data.coauthors.length > 0 ? ` · with ${data.coauthors.join(', ')}` : ''}</p>
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Service</h2>
+      {service.map(({ data }) => (
+        <div class="row">
+          <div class="when">{formatDateRange(data.start, data.end)}</div>
+          <div class="what"><p class="t">{data.role}</p><p class="s">{data.organization}</p>{data.description && <p class="d">{data.description}</p>}</div>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Teaching</h2>
+      {teaching.map(({ data }) => (
+        <div class="row">
+          <div class="when">{formatDateRange(data.start, data.end)}</div>
+          <div class="what"><p class="t">{data.role}</p><p class="s">{data.organization}</p>{data.highlights.length > 0 && <p class="d">{data.highlights.join(' · ')}</p>}</div>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2>Industry</h2>
+      {industry.map(({ data }) => (
+        <div class="row">
+          <div class="when">{formatDateRange(data.start, data.end)}</div>
+          <div class="what">
+            <p class="t">{data.role}</p>
+            <p class="s">{data.organization}</p>
+            {data.description && <p class="d">{data.description}</p>}
+            {data.highlights.length > 0 && <ul>{data.highlights.map((n) => <li>{n}</li>)}</ul>}
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <footer>Last updated {today} · thomaskon.com/cv</footer>
+  </body>
+</html>
+
+<style is:global>
+  @page { size: A4; margin: 16mm 15mm 18mm; }
+  html { font-size: 10pt; }
+  body { margin: 0; color: #111; background: #fff; font-family: 'Inter Variable', system-ui, sans-serif; line-height: 1.4; }
+  a { color: inherit; text-decoration: none; }
+  .top { border-bottom: 1.5px solid #111; padding-bottom: 8pt; margin-bottom: 12pt; }
+  h1 { font-family: 'Fraunces Variable', Georgia, serif; font-weight: 500; font-size: 24pt; line-height: 1.05; margin: 0 0 3pt; font-variation-settings: 'SOFT' 100, 'opsz' 72; }
+  .role { margin: 0 0 3pt; font-size: 10.5pt; }
+  .contact { margin: 0; font-size: 9pt; color: #444; }
+  section { margin-bottom: 11pt; break-inside: auto; }
+  section.pubs { break-before: page; }
+  h2 { font-family: 'Fraunces Variable', Georgia, serif; font-weight: 500; font-size: 12.5pt; margin: 0 0 5pt; padding-bottom: 2pt; border-bottom: 0.75px solid #999; break-after: avoid; font-variation-settings: 'SOFT' 100, 'opsz' 24; }
+  h3 { font-size: 9.5pt; font-weight: 600; margin: 6pt 0 3pt; color: #333; break-after: avoid; }
+  .prose { margin: 0; }
+  .note { margin: 0 0 3pt; font-size: 8.5pt; color: #555; }
+  .row { display: grid; grid-template-columns: 26mm minmax(0, 1fr); column-gap: 5mm; padding: 3pt 0; break-inside: avoid; }
+  .when { font-size: 9pt; color: #444; padding-top: 1pt; }
+  .t { margin: 0; font-weight: 600; }
+  .s { margin: 0; color: #444; font-size: 9.5pt; }
+  .d { margin: 2pt 0 0; font-size: 9.5pt; }
+  ul { margin: 2pt 0 0; padding-left: 12pt; font-size: 9.5pt; }
+  li { margin: 0 0 1pt; }
+  .cites { margin: 0; padding-left: 16pt; font-size: 9.5pt; }
+  .cites li { margin: 0 0 3pt; break-inside: avoid; }
+  .cites.plain { list-style: none; padding-left: 0; }
+  .tag { font-size: 8pt; font-weight: 500; color: #444; border: 0.75px solid #bbb; border-radius: 3pt; padding: 0 3pt; margin-left: 3pt; vertical-align: 1pt; }
+  footer { margin-top: 14pt; padding-top: 6pt; border-top: 0.75px solid #ccc; font-size: 8pt; color: #666; }
+</style>
