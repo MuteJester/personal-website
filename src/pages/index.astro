@@ -61,7 +61,7 @@ const jsonLd = {
 <BaseLayout title={profile.data.name} ogType="profile" jsonLd={jsonLd}>
   <Hero profile={profile} />
 
-  <SectionHeading title="Research contributions" />
+  <SectionHeading title="Research contributions" align="center" />
   <div class="cards">
     {contributions.map(({ id, data }) => {
       const paper = data.paper ? pubById.get(data.paper) : undefined;
@@ -78,11 +78,11 @@ const jsonLd = {
     })}
   </div>
 
-  <SectionHeading title="Selected publications" />
+  <SectionHeading title="Selected publications" align="center" />
   <div class="pubs">{selected.map((pub) => <PublicationRow pub={pub} />)}</div>
   <p class="more"><a href={withBase('publications/')}>All publications</a></p>
 
-  <SectionHeading title="Patents" />
+  <SectionHeading title="Patents" align="center" />
   <div class="pubs">{patents.map((p) => <PatentRow patent={p} />)}</div>
 </BaseLayout>
 
