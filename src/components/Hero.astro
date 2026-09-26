@@ -1,57 +1,55 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { withBase } from '../lib/url';
-import LinkList from './LinkList.astro';
 import { Image } from 'astro:assets';
+import ContactList from './ContactList.astro';
 import portrait from '../assets/images/portrait-hero.jpg';
 
 interface Props { profile: CollectionEntry<'profile'> }
 const { data } = Astro.props.profile;
-const links = [
-  { label: data.email, href: `mailto:${data.email}` },
-  data.links.scholar && { label: 'Scholar', href: data.links.scholar, external: true },
-  data.links.orcid && { label: 'ORCID', href: data.links.orcid, external: true },
-  data.links.github && { label: 'GitHub', href: data.links.github, external: true },
-  data.links.linkedin && { label: 'LinkedIn', href: data.links.linkedin, external: true },
-  data.cvPdf && { label: 'CV (PDF)', href: withBase(data.cvPdf) },
-].filter(Boolean) as { label: string; href: string; external?: boolean }[];
+const [role, ...rest] = data.affiliation.split(' · ');
+const affiliation = rest.join(' · ');
 ---
 
 <section class="hero">
   <div class="text">
-    <p class="mono kicker">{data.affiliation}</p>
+    <p class="identity">
+      <strong>{role}</strong>
+      {affiliation && <span>{affiliation}</span>}
+    </p>
     <h1 class="name">{data.name}</h1>
     <p class="headline">{data.headline}</p>
     <p class="bio">{data.bio}</p>
-    {data.credentials.length > 0 && (
-      <ul class="creds">{data.credentials.map((c) => <li>{c}</li>)}</ul>
-    )}
-    <LinkList links={links} />
   </div>
-  <figure class="media">
-    <Image src={portrait} alt={data.hero.alt} width={720} class="still" loading="eager" />
-    {data.heroCaption && <figcaption class="mono">{data.heroCaption}</figcaption>}
-  </figure>
+  <aside class="side">
+    <figure class="media">
+      <Image src={portrait} alt={data.hero.alt} width={720} class="still" loading="eager" />
+      {data.heroCaption && <figcaption>{data.heroCaption}</figcaption>}
+    </figure>
+    <ContactList profile={Astro.props.profile} />
+  </aside>
 </section>
 
 <style>
   .hero {
-    display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    display: grid; grid-template-columns: minmax(0, 3fr) minmax(16rem, 2fr);
     gap: var(--space-7); align-items: start; padding-block: var(--space-6) var(--space-7);
   }
-  .kicker { margin-bottom: var(--space-3); color: var(--accent); }
+  .identity { display: grid; gap: 0.1rem; margin-bottom: var(--space-4); padding-left: var(--space-3); border-left: 2px solid var(--accent); font-size: var(--text-sm); max-width: none; }
+  .identity strong { color: var(--ink); font-weight: 600; }
+  .identity span { color: var(--muted); }
   .name { font-size: var(--text-hero); font-variation-settings: 'SOFT' 100, 'opsz' 144; letter-spacing: -0.02em; margin-bottom: var(--space-3); }
-  .headline { font-family: var(--font-display); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100; color: var(--ink); margin-bottom: var(--space-4); max-width: 34rem; }
-  .bio { margin-bottom: var(--space-4); }
-  .creds { list-style: none; padding: 0; margin: 0 0 var(--space-5); border-left: 2px solid var(--accent); padding-left: var(--space-3); font-size: var(--text-sm); color: var(--muted); display: grid; gap: var(--space-1); }
-  .media { margin: 0; max-width: 22rem; justify-self: end; width: 100%; }
-  .still {
-    width: 100%; height: auto; aspect-ratio: 900 / 1066; object-fit: cover; border-radius: var(--radius);
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule));
-  }
-  figcaption { margin-top: var(--space-2); text-transform: none; letter-spacing: 0; }
-  @media (max-width: 720px) {
+  .headline { font-family: var(--font-display); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100; color: var(--muted); margin-bottom: var(--space-5); max-width: 34rem; }
+  .bio { margin-bottom: 0; }
+  .side { display: grid; gap: var(--space-4); max-width: 22rem; justify-self: end; width: 100%; }
+  .media { margin: 0; }
+  .still { width: 100%; height: auto; aspect-ratio: 900 / 1066; object-fit: cover; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule)); }
+  figcaption { margin-top: var(--space-2); font-size: var(--text-xs); color: var(--muted); }
+  @media (max-width: 860px) {
     .hero { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
-    .media { max-width: 16rem; justify-self: start; }
+    .side { max-width: none; justify-self: stretch; grid-template-columns: minmax(0, 16rem) minmax(0, 1fr); align-items: start; }
+  }
+  @media (max-width: 560px) {
+    .side { grid-template-columns: minmax(0, 1fr); }
+    .media { max-width: 16rem; }
   }
 </style>
