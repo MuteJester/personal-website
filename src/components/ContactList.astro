@@ -19,7 +19,7 @@ const items = [
   data.links.scholar && { icon: 'scholar', label: 'Google Scholar', href: data.links.scholar, external: true },
   data.links.github && { icon: 'github', label: 'GitHub', href: data.links.github, external: true },
   data.links.linkedin && { icon: 'linkedin', label: 'LinkedIn', href: data.links.linkedin, external: true },
-  data.cvPdf && { icon: 'pdf', label: 'Curriculum vitae (PDF)', href: withBase(data.cvPdf) },
+  data.cvPdf && { icon: 'pdf', label: 'CV (PDF)', href: withBase(data.cvPdf) },
 ].filter(Boolean) as { icon: string; label: string; href: string; external?: boolean }[];
 ---
 
@@ -35,9 +35,13 @@ const items = [
 </ul>
 
 <style>
-  .contact { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper-2); overflow: hidden; }
-  .contact li + li { border-top: 1px solid var(--rule); }
-  .contact a { display: flex; align-items: center; gap: var(--space-3); padding: 0.6rem var(--space-4); color: var(--ink); text-decoration: none; font-size: var(--text-sm); transition: background-color var(--ease); }
+  .contact { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper-2); overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; }
+  .contact li:first-child, .contact li:last-child:nth-child(even) { grid-column: 1 / -1; }
+  .contact li { border-top: 1px solid var(--rule); }
+  .contact li:first-child { border-top: 0; }
+  .contact li:nth-child(even):not(:first-child):not(:last-child) { border-right: 1px solid var(--rule); }
+  .contact a { display: flex; align-items: center; gap: var(--space-2); padding: 0.5rem var(--space-3); color: var(--ink); text-decoration: none; font-size: var(--text-xs); transition: background-color var(--ease); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .contact a span { overflow: hidden; text-overflow: ellipsis; }
   .contact a:hover { background: var(--accent-soft); color: var(--accent); }
   .contact svg { flex: none; color: var(--muted); }
   .contact a:hover svg { color: var(--accent); }

@@ -29,13 +29,13 @@ const affiliation = rest.join(' · ');
 <style>
   .hero {
     display: grid; grid-template-columns: minmax(0, 3fr) minmax(16rem, 2fr);
-    gap: var(--space-7); align-items: start; padding-block: var(--space-6) var(--space-7);
+    gap: var(--space-7); align-items: center; padding-block: var(--space-6) var(--space-6);
   }
   .name { font-size: var(--text-hero); font-variation-settings: 'SOFT' 100, 'opsz' 144; letter-spacing: -0.02em; margin-bottom: var(--space-2); }
-  .identity { color: var(--muted); font-size: var(--text-base); margin-bottom: var(--space-4); max-width: none; }
+  .identity { color: var(--ink); font-weight: 500; font-size: var(--text-base); margin-bottom: var(--space-4); max-width: none; }
   .headline { font-family: var(--font-display); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100; color: var(--muted); margin-bottom: var(--space-5); max-width: 34rem; }
   .bio { margin-bottom: 0; }
-  .side { display: grid; gap: var(--space-4); max-width: 22rem; justify-self: end; width: 100%; }
+  .side { display: grid; gap: var(--space-3); max-width: 21rem; justify-self: end; width: 100%; }
   .media { margin: 0; }
   .still { width: 100%; height: auto; aspect-ratio: 900 / 1066; object-fit: cover; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule)); }
   figcaption { margin-top: var(--space-2); font-size: var(--text-xs); color: var(--muted); }
