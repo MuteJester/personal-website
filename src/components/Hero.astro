@@ -2,6 +2,8 @@
 import type { CollectionEntry } from 'astro:content';
 import { withBase } from '../lib/url';
 import LinkList from './LinkList.astro';
+import { Image } from 'astro:assets';
+import portrait from '../assets/images/portrait-hero.jpg';
 
 interface Props { profile: CollectionEntry<'profile'> }
 const { data } = Astro.props.profile;
@@ -27,16 +29,7 @@ const links = [
     <LinkList links={links} />
   </div>
   <figure class="media">
-    <video
-      class="loop"
-      autoplay muted loop playsinline preload="metadata"
-      poster={withBase(data.hero.poster)}
-      aria-label={data.hero.alt}
-    >
-      <source media="(prefers-reduced-motion: no-preference)" src={withBase(data.hero.webm)} type="video/webm" />
-      <source media="(prefers-reduced-motion: no-preference)" src={withBase(data.hero.mp4)} type="video/mp4" />
-    </video>
-    <img class="still" src={withBase(data.hero.poster)} alt={data.hero.alt} width="496" height="588" />
+    <Image src={portrait} alt={data.hero.alt} width={720} class="still" loading="eager" />
     {data.heroCaption && <figcaption class="mono">{data.heroCaption}</figcaption>}
   </figure>
 </section>
@@ -52,18 +45,11 @@ const links = [
   .bio { margin-bottom: var(--space-4); }
   .creds { list-style: none; padding: 0; margin: 0 0 var(--space-5); border-left: 2px solid var(--accent); padding-left: var(--space-3); font-size: var(--text-sm); color: var(--muted); display: grid; gap: var(--space-1); }
   .media { margin: 0; max-width: 22rem; justify-self: end; width: 100%; }
-  .loop, .still {
-    width: 100%; aspect-ratio: 496 / 588; object-fit: cover; border-radius: var(--radius);
+  .still {
+    width: 100%; height: auto; aspect-ratio: 900 / 1066; object-fit: cover; border-radius: var(--radius);
     border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--rule));
   }
-  .loop { animation: fade 250ms ease-out both; }
-  .still { display: none; }
   figcaption { margin-top: var(--space-2); text-transform: none; letter-spacing: 0; }
-  @keyframes fade { from { opacity: 0 } to { opacity: 1 } }
-  @media (prefers-reduced-motion: reduce) {
-    .loop { display: none; }
-    .still { display: block; }
-  }
   @media (max-width: 720px) {
     .hero { grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
     .media { max-width: 16rem; justify-self: start; }

@@ -3,7 +3,7 @@ import { getCollection, getEntry } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { withBase } from '../lib/url';
-import portrait from '../assets/images/speaking-closeup.jpg';
+import portrait from '../assets/images/speaking-auditorium.jpg';
 
 const profile = await getEntry('profile', 'profile');
 const areas = (await getCollection('research')).sort((a, b) => a.data.order - b.data.order);
@@ -27,7 +27,7 @@ const projById = new Map(projects.map((p) => [p.id, p]));
       </p>
       <ul class="interests">{profile?.data.researchInterests.map((i) => <li class="mono">{i}</li>)}</ul>
     </div>
-    <Image src={portrait} alt="Thomas Konstantinovsky giving a talk" width={640} class="portrait" />
+    <Image src={portrait} alt="Thomas Konstantinovsky speaking to a conference audience" width={800} class="portrait" />
   </section>
 
 
