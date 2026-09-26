@@ -1,0 +1,7 @@
+title: Research interest
+summary: One-line summary shown in the collapsed row.
+body: >-
+  A paragraph shown when expanded.
+publications: [2026-short-title]   # publication ids
+software: [packagename]            # project ids
+order: 6

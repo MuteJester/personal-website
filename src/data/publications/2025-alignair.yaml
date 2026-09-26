@@ -14,3 +14,6 @@ selected: true
 abstract: >-
   Sequence alignment of immunoglobulin (Ig) sequences is central to the computational analysis of adaptive immune receptor repertoire sequencing (AIRR-seq) data, impacting adaptive immunity research and antibody engineering. Traditional Ig sequence aligners often struggle with the complexities of V(D)J recombination and somatic hypermutation (SHM), resulting in suboptimal allele assignment accuracy and sequence segmentation. We introduce AlignAIR, a deep learning-based aligner that leverages simulation and a multi-task learning framework. AlignAIR improves allele assignment accuracy, productivity assessment, sequence segmentation and speed, and its latent space captures SHM characteristics. It integrates with existing AIRR-seq pipelines and ships with a web interface and a container image for local processing of millions of sequences.
 featuredOrder: 1
+volume: "53"
+number: "13"
+pages: gkaf651

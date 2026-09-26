@@ -1,0 +1,6 @@
+role: Peer reviewer
+organization: Journal or organization
+start: 2026-01-01
+end: 2026-12-31               # optional
+description: Optional note.
+url: https://example.org      # optional

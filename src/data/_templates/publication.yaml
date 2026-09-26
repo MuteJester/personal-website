@@ -1,0 +1,22 @@
+title: Full title of the paper
+authors: [First Author, Thomas Konstantinovsky, Last Author]
+venue: Journal or Conference Name
+venueShort: Short name        # optional, used in compact rows
+volume: "12"                  # optional
+number: "3"                   # optional
+pages: e123                   # optional
+year: 2026
+type: journal                 # journal | conference | preprint | other
+status: published             # published | preprint | in-preparation
+equalContribution: false      # true if joint first authorship
+equalContributors: 2          # how many leading authors share first authorship
+doi: 10.1000/example          # optional
+arxiv: "2601.00000"           # optional
+pmid: "12345678"              # optional
+pdf: /papers/2026-short-title.pdf   # optional, file placed under public/papers/
+code: https://github.com/MuteJester/example   # optional
+app: https://example.org      # optional
+abstract: >-
+  Optional abstract, shown when the entry is expanded.
+selected: false               # true to show on the home page
+featuredOrder: 99             # order among selected papers on the home page

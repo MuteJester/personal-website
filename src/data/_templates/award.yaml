@@ -1,0 +1,6 @@
+title: Name of the fellowship, scholarship or award
+issuer: Awarding body
+date: 2026-01-01
+end: 2028-12-31               # optional, for multi-year funding
+kind: fellowship              # fellowship | scholarship | award
+description: Optional note.  # no amounts

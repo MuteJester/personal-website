@@ -48,3 +48,15 @@ describe('toBibtex', () => {
     expect(toBibtex({ ...journal, title: 'GenAIRR for AIRR data' })).toContain('title = {{GenAIRR for AIRR data}}');
   });
 });
+
+describe('toBibtex details', () => {
+  it('escapes ampersands', () => {
+    expect(toBibtex({ ...journal, venue: 'Epigenetics & Chromatin' })).toContain('journal = {Epigenetics \\& Chromatin}');
+  });
+  it('includes volume, number and pages when present', () => {
+    const b = toBibtex({ ...journal, volume: '53', number: '13', pages: 'gkaf651' });
+    expect(b).toContain('volume = {53}');
+    expect(b).toContain('number = {13}');
+    expect(b).toContain('pages = {gkaf651}');
+  });
+});

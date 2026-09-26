@@ -12,3 +12,6 @@ selected: true
 abstract: >-
   Reliable analysis of AIRR-seq data depends on accurate alignment of rearranged immunoglobulin (Ig) sequences, yet there is no unified benchmarking standard that represents the complexities of real data. We introduce GenAIRR, a modular simulation framework that generates Ig sequences alongside their ground truth, realistically simulating V(D)J recombination, somatic hypermutation and a range of sequence corruptions. Using GenAIRR we assess prominent Ig sequence aligners across a range of metrics and reveal distinct performance characteristics for each. The datasets and evaluation criteria provide a basis for unbiased benchmarking of immunogenetics tools.
 featuredOrder: 2
+volume: "25"
+number: "6"
+pages: bbae556

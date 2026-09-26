@@ -1,0 +1,13 @@
+name: PackageName
+tagline: One line on what it is
+description: Two or three sentences on what it does and how it is delivered.
+repo: https://github.com/MuteJester/PackageName
+pypi: PackageName             # optional, enables the install command
+docs: https://example.org     # optional
+app: https://example.org      # optional
+paper: 2026-short-title       # optional publication id
+kind: research                # research (feature card) | tool (compact card)
+plain: One sentence for non-specialists, shown on the home page.   # research only
+tags: [python]
+featured: false               # true to show on the home page
+order: 99

@@ -1,0 +1,13 @@
+title: Title of the talk or poster
+event: Full event name
+eventShort: Short name        # optional, used in compact rows
+date: 2026-06-15              # first day of the event if the exact day is unknown
+yearOnly: false               # true if only the year is known
+location: City, Country       # optional
+type: talk                    # talk | short-talk | lightning | poster | demo | invited
+coauthors: [Gur Yaari]        # optional
+description: Optional one-line note.
+url: https://example.org      # optional event page
+slides: /slides/2026-talk.pdf # optional, under public/
+poster: /posters/2026.pdf     # optional, under public/
+video: https://youtube.com/watch?v=...   # optional

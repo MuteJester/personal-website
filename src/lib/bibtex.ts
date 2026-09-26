@@ -8,6 +8,9 @@ export interface BibSource {
   doi?: string;
   arxiv?: string;
   url?: string;
+  volume?: string;
+  number?: string;
+  pages?: string;
 }
 
 const STOP = new Set(['a', 'an', 'the', 'on', 'of', 'in', 'for', 'to', 'and', 'with', 'from', 'by', 'at']);
@@ -19,13 +22,18 @@ export function bibtexKey(p: BibSource): string {
   return `${surname}${p.year}${word}`;
 }
 
+const esc = (s: string) => s.replace(/&/g, '\\&').replace(/%/g, '\\%');
+
 export function toBibtex(p: BibSource): string {
   const isPreprint = p.type === 'preprint' || p.status === 'preprint';
   const kind = isPreprint ? 'misc' : p.type === 'conference' ? 'inproceedings' : 'article';
   const fields: [string, string | undefined][] = [
-    ['title', `{${p.title}}`],
+    ['title', `{${esc(p.title)}}`],
     ['author', p.authors.join(' and ')],
-    [isPreprint ? 'howpublished' : p.type === 'conference' ? 'booktitle' : 'journal', isPreprint && p.arxiv ? undefined : p.venue],
+    [isPreprint ? 'howpublished' : p.type === 'conference' ? 'booktitle' : 'journal', isPreprint && p.arxiv ? undefined : esc(p.venue)],
+    ['volume', p.volume],
+    ['number', p.number],
+    ['pages', p.pages],
     ['year', String(p.year)],
     ['doi', p.doi],
     ['eprint', isPreprint ? p.arxiv : undefined],

@@ -1,0 +1,9 @@
+title: Title of the invention
+inventors: [Thomas Konstantinovsky, Co-inventor Name]
+status: pending               # granted | pending
+number: US 00,000,000 B2      # for granted patents
+office: USPTO
+date: 2026-01-01              # grant date or filing date
+assignee: Organization        # optional
+url: https://patents.google.com/patent/...   # optional
+note: US provisional patent application      # optional, shown for pending

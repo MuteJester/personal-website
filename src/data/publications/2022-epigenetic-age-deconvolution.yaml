@@ -7,3 +7,5 @@ type: journal
 equalContribution: true
 equalContributors: 3
 doi: 10.1186/s13072-022-00441-y
+volume: "15"
+number: "1"

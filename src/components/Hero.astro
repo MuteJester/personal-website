@@ -19,8 +19,8 @@ const affiliation = rest.join(' · ');
   </div>
   <aside class="side">
     <figure class="media">
-      <Image src={portrait} alt={data.hero.alt} width={720} class="still" loading="eager" />
-      {data.heroCaption && <figcaption>{data.heroCaption}</figcaption>}
+      <Image src={portrait} alt={data.portraitAlt} width={720} class="still" loading="eager" />
+      {data.portraitCaption && <figcaption>{data.portraitCaption}</figcaption>}
     </figure>
     <ContactList profile={Astro.props.profile} />
   </aside>

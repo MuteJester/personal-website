@@ -1,0 +1,9 @@
+role: Position title
+organization: Organization
+kind: research                # research | teaching | industry
+location: City, Country       # optional
+start: 2026-01-01
+end: 2026-12-31               # optional, omit while current
+description: One-line summary.
+highlights:
+  - Bullet point.
