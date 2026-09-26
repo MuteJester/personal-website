@@ -18,7 +18,7 @@ bio: >-
   standards: as efficient as the problem allows, and approachable by anyone,
   whatever their field. Most of my work is released as open-source software.
 researchInterests:
-  - Graph theory
+  - Markov and graph models
   - Data compression and string algorithms
   - Information theory
   - Probability and statistical modeling
