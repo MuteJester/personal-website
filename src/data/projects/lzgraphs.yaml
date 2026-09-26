@@ -5,7 +5,6 @@ repo: https://github.com/MuteJester/LZGraphs
 pypi: LZGraphs
 paper: 2023-lzgraphs
 kind: research
-figure: graph
 plain: Uses compression-based graph representations to model immune-receptor repertoires without aligning sequences.
 tags: [graphs, compression, python]
 featured: true

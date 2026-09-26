@@ -5,7 +5,6 @@ repo: https://github.com/MuteJester/GenAIRR
 pypi: GenAIRR
 paper: 2024-genairr-aligner-benchmark
 kind: research
-figure: simulate
 plain: Generates fully annotated immune-receptor sequences for training and evaluating analysis methods, across 23 species.
 tags: [simulation, benchmarking, python, rust]
 featured: true

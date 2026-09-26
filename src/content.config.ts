@@ -143,7 +143,6 @@ const projects = defineCollection({
     paper: z.string().optional(), // publication id
     plain: z.string().optional(), // one-sentence explanation for non-specialists
     kind: z.enum(['research', 'tool']).default('tool'),
-    figure: z.enum(['simulate', 'align', 'graph']).optional(),
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     order: z.number().default(99),

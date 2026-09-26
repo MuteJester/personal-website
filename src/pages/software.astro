@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ToolFigure from '../components/ToolFigure.astro';
 import { fetchRepoMeta } from '../lib/repoMeta';
 import { formatMonthYear } from '../lib/format';
 import { withBase } from '../lib/url';
@@ -19,94 +18,88 @@ const linksFor = (p: (typeof projects)[number]) => {
   return [
     { label: 'Repository', href: d.repo },
     d.pypi && { label: 'PyPI', href: `https://pypi.org/project/${d.pypi}/` },
-    d.docs && { label: 'Documentation', href: d.docs },
+    d.docs && { label: 'Docs', href: d.docs },
     d.app && { label: 'Web app', href: d.app },
-    paper && { label: `Paper, ${paper.data.venueShort ?? paper.data.venue} ${paper.data.year}`, href: `${withBase('publications/')}#${paper.id}` },
+    paper && { label: `Paper (${paper.data.year})`, href: `${withBase('publications/')}#${paper.id}` },
   ].filter(Boolean) as { label: string; href: string }[];
 };
-const factLine = (id: string, withPython = true) => {
+const chips = (id: string) => {
   const m = meta.get(id) ?? {};
   return [
-    m.version && `version ${m.version}`,
-    withPython && m.requiresPython && `Python ${m.requiresPython.replace('>=', '')} or newer`,
-    m.language && `${m.language}`,
-    m.license && `${m.license} license`,
-    m.updated && `updated ${formatMonthYear(m.updated)}`,
-  ].filter(Boolean).join(', ');
+    m.version && `v${m.version}`,
+    m.requiresPython && `Python ${m.requiresPython.replace('>=', '≥')}`,
+    m.license,
+    m.updated && `Updated ${formatMonthYear(m.updated)}`,
+  ].filter(Boolean) as string[];
 };
+const language = (id: string) => meta.get(id)?.language;
 ---
 
 <BaseLayout title="Software" description="Open-source software by Thomas Konstantinovsky: GenAIRR, AlignAIR, LZGraphs and other tools.">
   <h1>Software</h1>
-  <p class="deck">Three research packages that other groups can install and run, and a few smaller tools.</p>
+  <p class="deck">Research packages that other groups can install and run, and a few smaller tools.</p>
 
-  <div class="plates">
+  <section class="grid featured">
     {research.map((p) => (
-      <article class="plate" id={p.id}>
-        <div class="figure">
-          {p.data.figure && <ToolFigure kind={p.data.figure} title={`${p.data.name}: ${p.data.tagline}`} />}
-        </div>
-        <div class="text">
+      <article class="card" id={p.id}>
+        <header class="head">
           <h2>{p.data.name}</h2>
-          <p class="tagline">{p.data.tagline}</p>
-          <p class="desc">{p.data.description}</p>
-          {p.data.pypi && <p class="install"><span class="prompt">$</span>pip install {p.data.pypi}</p>}
-          {factLine(p.id) && <p class="facts">{factLine(p.id)}.</p>}
-          <ul class="links">{linksFor(p).map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
-        </div>
+          {language(p.id) && <span class="lang">{language(p.id)}</span>}
+        </header>
+        <p class="tagline">{p.data.tagline}</p>
+        <p class="desc">{p.data.description}</p>
+        {p.data.pypi && <p class="install"><span class="prompt">$</span>pip install {p.data.pypi}</p>}
+        {chips(p.id).length > 0 && <ul class="chips">{chips(p.id).map((c) => <li>{c}</li>)}</ul>}
+        <ul class="actions">{linksFor(p).map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
       </article>
     ))}
-  </div>
+  </section>
 
-  <section class="tools">
-    <h2>Smaller tools</h2>
-    <ul class="tool-list">
-      {tools.map((p) => (
-        <li class="tool" id={p.id}>
-          <div>
-            <h3>{p.data.name}</h3>
-            <p class="tdesc">{p.data.description}</p>
-            {factLine(p.id, false) && <p class="facts">{factLine(p.id, false)}.</p>}
-          </div>
-          <ul class="links">{linksFor(p).map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
-        </li>
-      ))}
-    </ul>
+  <h2 class="section-title">Smaller tools</h2>
+  <section class="grid small">
+    {tools.map((p) => (
+      <article class="card compact" id={p.id}>
+        <header class="head">
+          <h3>{p.data.name}</h3>
+          {language(p.id) && <span class="lang">{language(p.id)}</span>}
+        </header>
+        <p class="desc">{p.data.description}</p>
+        <ul class="actions">{linksFor(p).map((l) => <li><a href={l.href} rel="noopener">{l.label}</a></li>)}</ul>
+      </article>
+    ))}
   </section>
 </BaseLayout>
 
 <style>
   h1 { margin-bottom: var(--space-2); }
   .deck { color: var(--muted); margin-bottom: var(--space-6); }
+  .grid { display: grid; gap: var(--space-4); }
+  .featured { grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); margin-bottom: var(--space-7); }
+  .small { grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
 
-  .plates { display: grid; gap: var(--space-4); }
-  .plate {
-    display: grid; grid-template-columns: minmax(14rem, 18rem) minmax(0, 1fr); gap: var(--space-6);
-    padding: var(--space-5); border: 1px solid var(--rule); border-radius: var(--radius); background: var(--paper-2);
-    scroll-margin-top: var(--space-6);
+  .card {
+    display: flex; flex-direction: column; gap: var(--space-3);
+    padding: var(--space-5); border: 1px solid var(--rule); border-radius: 16px; background: var(--paper-2);
+    scroll-margin-top: var(--space-6); transition: border-color var(--ease);
   }
-  .figure { align-self: center; padding: var(--space-3); background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; }
-  .plate h2 { font-size: var(--text-h2); margin-bottom: var(--space-1); }
-  .tagline { font-family: var(--font-display); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100; color: var(--muted); margin-bottom: var(--space-3); }
-  .desc { font-size: var(--text-sm); margin-bottom: var(--space-3); }
-  .install { font-family: var(--font-mono); font-size: var(--text-sm); margin: 0 0 var(--space-2); padding: var(--space-2) var(--space-3); border-radius: 6px; background: var(--paper); border: 1px solid var(--rule); display: inline-block; }
+  .card:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--rule)); }
+  .featured .card { border-top: 3px solid var(--accent); }
+  .head { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); }
+  .card h2 { font-size: var(--text-h2); }
+  .card h3 { font-family: var(--font-display); font-weight: 500; font-size: var(--text-lg); }
+  .lang { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--muted); border: 1px solid var(--rule); border-radius: 999px; padding: 0.1rem 0.55rem; white-space: nowrap; }
+  .tagline { font-family: var(--font-display); font-size: var(--text-lg); font-variation-settings: 'SOFT' 100; color: var(--muted); margin: 0; }
+  .desc { font-size: var(--text-sm); margin: 0; flex: 1; }
+  .install { font-family: var(--font-mono); font-size: var(--text-sm); margin: 0; padding: var(--space-2) var(--space-3); border-radius: 8px; background: var(--paper); border: 1px solid var(--rule); }
   .prompt { color: var(--accent); margin-right: 0.5rem; user-select: none; }
-  .facts { font-size: var(--text-xs); color: var(--muted); margin: 0 0 var(--space-3); }
-  .links { list-style: none; margin: 0; padding: 0; display: flex; gap: var(--space-4); flex-wrap: wrap; font-size: var(--text-sm); }
-
-  .tools { margin-top: var(--space-7); }
-  .tools h2 { font-size: var(--text-lg); font-variation-settings: 'SOFT' 100, 'opsz' 24; padding-bottom: var(--space-3); border-bottom: 2px solid var(--ink); }
-  .tool-list { list-style: none; margin: 0; padding: 0; }
-  .tool { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-4); align-items: start; padding-block: var(--space-4); border-bottom: 1px solid var(--rule); }
-  .tool h3 { font-family: var(--font-body); font-weight: 600; font-size: var(--text-base); margin-bottom: 0.15rem; }
-  .tdesc { font-size: var(--text-sm); margin: 0 0 var(--space-1); }
-  .tool .facts { margin: 0; }
-  .tool .links { justify-content: flex-end; }
-
-  @media (max-width: 860px) {
-    .plate { grid-template-columns: minmax(0, 1fr); }
-    .figure { max-width: 22rem; }
-    .tool { grid-template-columns: minmax(0, 1fr); }
-    .tool .links { justify-content: flex-start; }
-  }
+  .chips { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .chips li { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); background: var(--paper); border: 1px solid var(--rule); border-radius: 999px; padding: 0.15rem 0.55rem; }
+  .actions { list-style: none; margin: var(--space-1) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .actions a { display: inline-block; font-size: var(--text-sm); text-decoration: none; color: var(--ink); border: 1px solid var(--ink); border-radius: 999px; padding: 0.3rem 0.8rem; transition: background-color var(--ease), color var(--ease); }
+  .actions a:hover { background: var(--ink); color: var(--paper); }
+  .actions li:first-child a { background: var(--ink); color: var(--paper); }
+  .actions li:first-child a:hover { background: var(--accent); border-color: var(--accent); }
+  .compact { gap: var(--space-2); }
+  .compact .actions a { font-size: var(--text-xs); padding: 0.25rem 0.65rem; }
+  .section-title { font-size: var(--text-lg); font-variation-settings: 'SOFT' 100, 'opsz' 24; padding-bottom: var(--space-3); margin-bottom: var(--space-4); border-bottom: 2px solid var(--ink); }
 </style>
