@@ -71,7 +71,7 @@ const cite = (p: Pub) => {
           <div class="when">{formatDateRange(data.start, data.end)}</div>
           <div class="what">
             <p class="t">{data.degree} in {data.field}</p>
-            <p class="s">{data.institution}{data.location ? `, ${data.location}` : ''}{data.advisor ? ` · Advisor: ${data.advisor}` : ''}</p>
+            <p class="s">{data.institution}{data.location ? `, ${data.location}` : ''}{data.advisor ? ` · ${data.advisorLabel}: ${data.advisor}` : ''}</p>
             {data.notes.length > 0 && <ul>{data.notes.map((n) => <li>{n}</li>)}</ul>}
           </div>
         </div>
@@ -85,7 +85,7 @@ const cite = (p: Pub) => {
           <div class="when">{formatDateRange(data.start, data.end)}</div>
           <div class="what">
             <p class="t">{data.role}</p>
-            <p class="s">{data.organization}</p>
+            <p class="s">{data.organization}{data.pi ? ` · PI: ${data.pi}` : ''}</p>
             {data.description && <p class="d">{data.description}</p>}
             {data.highlights.length > 0 && <ul>{data.highlights.map((n) => <li>{n}</li>)}</ul>}
           </div>

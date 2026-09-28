@@ -1,6 +1,7 @@
 role: Research Assistant (internship)
 organization: Holon Institute of Technology
 kind: research
+pi: Dr. Elad Segev
 start: 2020-08-01
 end: 2021-02-01
 description: Statistical and Bayesian analysis of DNA-methylation data. Automated data-collection pipelines.

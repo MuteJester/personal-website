@@ -1,6 +1,7 @@
 role: Position title
 organization: Organization
 kind: research                # research | teaching | industry
+pi: Prof. Name                # optional, principal investigator(s)
 location: City, Country       # optional
 start: 2026-01-01
 end: 2026-12-31               # optional, omit while current

@@ -29,4 +29,5 @@ Everything shown on the site comes from the YAML files in this folder. Each file
 - `status` on publications: `published` (default), `preprint`, or `in-preparation` (shown without links or citation).
 - Dates are ISO (`2026-06-15`). For talks with only a year known, set `yearOnly: true`.
 - Cross-references use ids: `research/*.yaml` lists publication and project ids; `projects/*.yaml` may name a `paper` id.
+- Education entries take `advisor` and an optional `advisorLabel` (e.g. "Undergraduate research advisor"); positions take an optional `pi`.
 - Keep amounts out of award entries. Never use em dashes in copy.

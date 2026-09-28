@@ -50,6 +50,7 @@ const education = defineCollection({
     start: z.coerce.date(),
     end: z.coerce.date().optional(),
     advisor: z.string().optional(),
+    advisorLabel: z.string().default('Advisor'), // e.g. 'Undergraduate research advisor'
     notes: z.array(z.string()).default([]),
   }),
 });
@@ -60,6 +61,7 @@ const experience = defineCollection({
     role: z.string(),
     organization: z.string(),
     kind: z.enum(['research', 'teaching', 'industry']),
+    pi: z.string().optional(), // principal investigator(s) the position was under
     location: z.string().optional(),
     start: z.coerce.date(),
     end: z.coerce.date().optional(),

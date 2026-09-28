@@ -4,5 +4,7 @@ institution: Holon Institute of Technology
 location: Holon, Israel
 start: 2018-10-01
 end: 2021-11-30
+advisor: Dr. Elad Segev
+advisorLabel: Undergraduate research advisor
 notes:
   - Emphasis on computational methods, machine learning, and digital logic design.

@@ -113,7 +113,7 @@ const tabs = [
   <section class="panel" id="panel-education">
     <h2 class="print-only">Education</h2>
     {education.map(({ data }) => (
-      <TimelineItem when={formatDateRange(data.start, data.end)} title={`${data.degree} in ${data.field}`} subtitle={`${data.institution}${data.location ? ` · ${data.location}` : ''}`} meta={data.advisor && `Advisor: ${data.advisor}`} notes={data.notes} />
+      <TimelineItem when={formatDateRange(data.start, data.end)} title={`${data.degree} in ${data.field}`} subtitle={`${data.institution}${data.location ? ` · ${data.location}` : ''}`} meta={data.advisor && `${data.advisorLabel}: ${data.advisor}`} notes={data.notes} />
     ))}
   </section>
 
@@ -121,7 +121,7 @@ const tabs = [
     <h2 class="print-only">Positions</h2>
     <p class="sub mono">Research</p>
     {research.map(({ data }) => (
-      <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={data.organization} description={data.description} notes={data.highlights} />
+      <TimelineItem when={formatDateRange(data.start, data.end)} title={data.role} subtitle={`${data.organization}${data.pi ? ` · PI: ${data.pi}` : ''}`} description={data.description} notes={data.highlights} />
     ))}
     <p class="sub mono">Teaching</p>
     {teaching.map(({ data }) => (
