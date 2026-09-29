@@ -22,6 +22,8 @@ const profile = defineCollection({
       orcid: link.optional(),
       linkedin: link.optional(),
     }),
+    seoTitle: z.string().optional(), // home page <title> and share title
+    seoDescription: z.string().optional(), // home page search and share description
     portraitAlt: z.string(),
     portraitCaption: z.string().optional(),
     cvPdf: z.string().optional(),

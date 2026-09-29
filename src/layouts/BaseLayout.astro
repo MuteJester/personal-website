@@ -13,6 +13,7 @@ interface Props {
   description?: string;
   ogImage?: string;
   ogType?: 'website' | 'profile';
+  fullTitle?: string; // overrides the '<title> · <name>' pattern
   jsonLd?: Record<string, unknown>;
 }
 
@@ -20,11 +21,11 @@ const profile = await getEntry('profile', 'profile');
 if (!profile) throw new Error('Missing src/data/profile/profile.yaml');
 const { name, shortBio } = profile.data;
 
-const { title, description = shortBio, ogImage = '/images/og.jpg', ogType = 'website', jsonLd } = Astro.props;
+const { title, description = shortBio, ogImage = '/images/og.jpg', ogType = 'website', jsonLd, fullTitle: titleOverride } = Astro.props;
 const ogAlt = `${name} speaking at a conference`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogUrl = new URL(withBase(ogImage), Astro.site);
-const fullTitle = title === name ? name : `${title} · ${name}`;
+const fullTitle = titleOverride ?? (title === name ? name : `${title} · ${name}`);
 ---
 
 <!doctype html>

@@ -59,7 +59,7 @@ const jsonLd = {
 };
 ---
 
-<BaseLayout title={profile.data.name} ogType="profile" jsonLd={jsonLd}>
+<BaseLayout title={profile.data.name} fullTitle={profile.data.seoTitle} description={profile.data.seoDescription} ogType="profile" jsonLd={jsonLd}>
   <Hero profile={profile} />
 
   <SectionHeading title="Research contributions" align="center" />
