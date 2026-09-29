@@ -61,7 +61,6 @@ const jsonLd = {
 
 <BaseLayout title={profile.data.name} ogType="profile" jsonLd={jsonLd}>
   <Hero profile={profile} />
-  <Recognition />
 
   <SectionHeading title="Research contributions" align="center" />
   <div class="cards">
@@ -86,6 +85,9 @@ const jsonLd = {
 
   <SectionHeading title="Patents" align="center" />
   <div class="pubs">{patents.map((p) => <PatentRow patent={p} />)}</div>
+
+  <SectionHeading title="Fellowships" align="center" />
+  <Recognition />
 </BaseLayout>
 
 <style>
