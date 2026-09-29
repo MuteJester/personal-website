@@ -20,9 +20,9 @@ const links = [
 ].filter(Boolean) as { label: string; href: string }[];
 const tag = d.status === 'preprint' ? 'Preprint' : undefined;
 const selfIndex = d.authors.indexOf('Thomas Konstantinovsky');
-const role = selfIndex === 0 && !d.equalContribution ? 'First author'
-  : d.equalContribution && selfIndex >= 0 && selfIndex < d.equalContributors ? 'Joint first author'
-  : selfIndex === 0 ? 'First author' : undefined;
+const role = selfIndex === 0 ? 'First author'
+  : d.equalContribution && selfIndex > 0 && selfIndex < d.equalContributors ? 'Joint first author'
+  : undefined;
 ---
 
 <details class="row" id={pub.id}>
