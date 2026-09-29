@@ -45,4 +45,12 @@ const items = [
   .contact a:hover { background: var(--accent-soft); color: var(--accent); }
   .contact svg { flex: none; color: var(--muted); }
   .contact a:hover svg { color: var(--accent); }
+  @media (max-width: 560px) {
+    .contact { grid-template-columns: minmax(0, 1fr); }
+    .contact li, .contact li:first-child, .contact li:last-child:nth-child(even) { grid-column: auto; border-right: 0 !important; }
+    .contact li { border-top: 1px solid var(--rule); }
+    .contact li:first-child { border-top: 0; }
+    .contact a { padding: 0.45rem var(--space-3); white-space: normal; }
+    .contact a span { overflow-wrap: anywhere; }
+  }
 </style>
