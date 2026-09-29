@@ -1,14 +1,16 @@
 ---
 import { withBase } from '../lib/url';
+const home = withBase('/');
 const nav = [
+  { href: home, label: 'Home' },
   { href: withBase('research/'), label: 'Research' },
   { href: withBase('publications/'), label: 'Publications' },
-  { href: withBase('talks/'), label: 'Talks & Posters' },
   { href: withBase('software/'), label: 'Software' },
+  { href: withBase('talks/'), label: 'Talks & Posters' },
   { href: withBase('cv/'), label: 'CV' },
 ];
 const path = Astro.url.pathname;
-const isActive = (href: string) => path.startsWith(href);
+const isActive = (href: string) => (href === home ? path === home : path.startsWith(href));
 ---
 
 <header class="wrap">
@@ -39,7 +41,6 @@ const isActive = (href: string) => path.startsWith(href);
   @media (max-width: 560px) {
     nav { display: grid; gap: var(--space-1); width: 100%; }
     .nav-row { display: flex; justify-content: center; gap: var(--space-4); }
-    .nav-row:last-child { gap: var(--space-7); }
     nav a { display: flex; align-items: center; min-height: 36px; padding-block: var(--space-1); white-space: nowrap; }
   }
 </style>
