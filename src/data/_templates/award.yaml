@@ -4,3 +4,7 @@ date: 2026-01-01
 end: 2028-12-31               # optional, for multi-year funding
 kind: fellowship              # fellowship | scholarship | award
 description: Optional note.  # no amounts
+highlight:                    # optional, show on the home page recognition band
+  label: Short name
+  context: One short line of context
+  order: 5

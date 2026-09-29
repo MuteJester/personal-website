@@ -3,3 +3,7 @@ issuer: Bar-Ilan University
 date: 2024-02-01
 kind: scholarship
 end: 2028-09-30
+highlight:
+  label: "President's Scholarship"
+  context: Outstanding PhD students, Bar-Ilan University
+  order: 2

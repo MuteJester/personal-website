@@ -127,6 +127,7 @@ const awards = defineCollection({
     end: z.coerce.date().optional(), // for multi-year fellowships and scholarships
     kind: z.enum(['fellowship', 'scholarship', 'award']).default('award'),
     description: z.string().optional(),
+    highlight: z.object({ label: z.string(), context: z.string(), order: z.number().default(99) }).optional(), // shown on the home page
   }),
 });
 
@@ -173,6 +174,7 @@ const service = defineCollection({
     end: z.coerce.date().optional(),
     description: z.string().optional(),
     url: link.optional(),
+    highlight: z.object({ label: z.string(), context: z.string(), order: z.number().default(99) }).optional(), // shown on the home page
   }),
 });
 

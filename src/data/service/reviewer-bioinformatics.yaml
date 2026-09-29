@@ -1,3 +1,7 @@
 role: Peer reviewer
 organization: Bioinformatics (Oxford University Press)
 start: 2026-01-01
+highlight:
+  label: "Peer reviewer"
+  context: Bioinformatics, Oxford University Press
+  order: 4

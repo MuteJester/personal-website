@@ -3,3 +3,7 @@ issuer: Planning and Budgeting Committee (VATAT), Council for Higher Education o
 date: 2025-11-01
 kind: fellowship
 end: 2028-09-30
+highlight:
+  label: "VATAT Fellowship"
+  context: Outstanding doctoral students in AI and data science
+  order: 1

@@ -2,6 +2,7 @@
 import { getCollection, getEntry } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
+import Recognition from '../components/Recognition.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import PublicationRow from '../components/PublicationRow.astro';
 import PatentRow from '../components/PatentRow.astro';
@@ -60,6 +61,7 @@ const jsonLd = {
 
 <BaseLayout title={profile.data.name} ogType="profile" jsonLd={jsonLd}>
   <Hero profile={profile} />
+  <Recognition />
 
   <SectionHeading title="Research contributions" align="center" />
   <div class="cards">

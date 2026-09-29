@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+const awards = await getCollection('awards', (a) => Boolean(a.data.highlight));
+const service = await getCollection('service', (s) => Boolean(s.data.highlight));
+const items = [...awards, ...service]
+  .map((e) => e.data.highlight!)
+  .sort((a, b) => a.order - b.order);
+---
+{items.length > 0 && (
+  <section class="recognition" aria-label="Recognition and service">
+    <ul>
+      {items.map((it) => (
+        <li>
+          <span class="label">{it.label}</span>
+          <span class="context">{it.context}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+)}
+<style>
+  .recognition { border-top: 1px solid var(--rule); padding-block: var(--space-4) var(--space-2); }
+  .recognition ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .recognition li { display: grid; gap: 0.15rem; padding: 0 var(--space-4); border-left: 1px solid var(--rule); }
+  .recognition li:first-child { border-left: 0; padding-left: 0; }
+  .label { font-family: var(--font-display); font-size: var(--text-base); font-weight: 500; color: var(--ink); font-variation-settings: 'SOFT' 100, 'opsz' 24; }
+  .context { font-size: var(--text-xs); color: var(--muted); line-height: 1.4; }
+  @media (max-width: 860px) {
+    .recognition ul { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--space-4); }
+    .recognition li:nth-child(odd) { border-left: 0; padding-left: 0; }
+  }
+  @media (max-width: 480px) {
+    .recognition ul { grid-template-columns: minmax(0, 1fr); row-gap: var(--space-3); }
+    .recognition li { border-left: 0; padding-left: 0; }
+  }
+</style>
