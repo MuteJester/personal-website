@@ -79,7 +79,7 @@ const jsonLd = {
   </div>
 
   <SectionHeading title="Selected publications" align="center" />
-  <div class="pubs">{selected.map((pub) => <PublicationRow pub={pub} />)}</div>
+  <div class="pubs">{selected.map((pub) => <PublicationRow pub={pub} showRole />)}</div>
   <p class="more"><a href={withBase('publications/')}>All publications</a></p>
 
   <SectionHeading title="Patents" align="center" />

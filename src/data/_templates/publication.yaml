@@ -18,5 +18,6 @@ code: https://github.com/MuteJester/example   # optional
 app: https://example.org      # optional
 abstract: >-
   Optional abstract, shown when the entry is expanded.
+significance: One line on why the paper matters   # optional, shown on the home page
 selected: false               # true to show on the home page
 featuredOrder: 99             # order among selected papers on the home page

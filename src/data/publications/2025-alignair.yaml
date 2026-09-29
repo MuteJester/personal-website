@@ -17,3 +17,4 @@ featuredOrder: 1
 volume: "53"
 number: "13"
 pages: gkaf651
+significance: Deep-learning aligner for antibody sequences that returns a calibrated confidence for every gene call; released with a web app and a container.

@@ -93,6 +93,7 @@ const publications = defineCollection({
     code: link.optional(),
     app: link.optional(),
     abstract: z.string().optional(),
+    significance: z.string().optional(), // one line shown on the home page
     selected: z.boolean().default(false),
     featuredOrder: z.number().default(99),
   }),

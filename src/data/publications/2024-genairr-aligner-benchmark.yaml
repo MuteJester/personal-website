@@ -15,3 +15,4 @@ featuredOrder: 2
 volume: "25"
 number: "6"
 pages: bbae556
+significance: Introduced GenAIRR, a ground-truth simulator, and used it for an unbiased comparison of widely used immunoglobulin aligners.

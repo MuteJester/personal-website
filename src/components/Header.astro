@@ -14,8 +14,12 @@ const isActive = (href: string) => path.startsWith(href);
 <header class="wrap">
   <a class="name" href={withBase('/')}>Thomas Konstantinovsky</a>
   <nav aria-label="Primary">
-    {nav.map((item) => (
-      <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+    {[nav.slice(0, 3), nav.slice(3)].map((group) => (
+      <div class="nav-row">
+        {group.map((item) => (
+          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>{item.label}</a>
+        ))}
+      </div>
     ))}
   </nav>
 </header>
@@ -27,8 +31,15 @@ const isActive = (href: string) => path.startsWith(href);
   }
   .name { font-family: var(--font-display); font-size: var(--text-lg); color: var(--ink); text-decoration: none; font-variation-settings: 'SOFT' 100; }
   nav { display: flex; gap: var(--space-5); flex-wrap: wrap; }
+  .nav-row { display: contents; }
   nav a { color: var(--muted); font-size: var(--text-sm); text-decoration: none; }
   nav a:hover, nav a[aria-current='page'] { color: var(--ink); text-decoration: underline; }
   nav a[aria-current='page'] { color: var(--accent); }
   @media (max-width: 720px) { nav { gap: var(--space-4); } }
+  @media (max-width: 560px) {
+    nav { display: grid; gap: var(--space-1); width: 100%; }
+    .nav-row { display: flex; justify-content: center; gap: var(--space-4); }
+    .nav-row:last-child { gap: var(--space-7); }
+    nav a { display: flex; align-items: center; min-height: 36px; padding-block: var(--space-1); white-space: nowrap; }
+  }
 </style>
