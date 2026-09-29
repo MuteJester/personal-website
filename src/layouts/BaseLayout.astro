@@ -68,6 +68,20 @@ const fullTitle = title === name ? name : `${title} · ${name}`;
       <slot />
     </main>
     <Footer />
+    <script>
+      // When the address points at a collapsible entry (e.g. /publications/#2025-alignair), open it.
+      function openTarget() {
+        const id = decodeURIComponent(location.hash.slice(1));
+        if (!id) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        const details = el instanceof HTMLDetailsElement ? el : el.closest('details');
+        if (details) details.open = true;
+        el.scrollIntoView({ block: 'start' });
+      }
+      openTarget();
+      window.addEventListener('hashchange', openTarget);
+    </script>
   </body>
 </html>
 
