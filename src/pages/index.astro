@@ -22,7 +22,7 @@ const patents = (await getCollection('patents')).sort(byDateDesc);
 const pubById = new Map(pubs.map((p) => [p.id, p]));
 
 const site = Astro.site?.toString() ?? '';
-const sameAs = Object.values(profile.data.links).filter(Boolean);
+const sameAs = [...Object.values(profile.data.links).filter(Boolean), ...profile.data.profiles];
 const person = {
   '@type': 'Person',
   '@id': `${site}#person`,

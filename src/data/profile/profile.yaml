@@ -30,6 +30,12 @@ links:
   scholar: https://scholar.google.com/citations?user=hFwsRS4AAAAJ
   linkedin: https://www.linkedin.com/in/thomas-konstantinovsky-56230117b
   orcid: https://orcid.org/0000-0002-4448-7928
+# Other profile pages for search engines (not shown on the site)
+profiles:
+  - https://www.wikidata.org/wiki/Q141604047
+  - https://www.semanticscholar.org/author/2057485964
+  - https://openalex.org/authors/A5076829749
+  - https://www.researchgate.net/profile/Thomas-Konstantinovsky
 seoTitle: "Thomas Konstantinovsky · Computational immunology and machine learning"
 seoDescription: Computer scientist developing algorithms, probabilistic models and machine learning for immune receptor sequences. Papers, software and CV.
 portraitAlt: Thomas Konstantinovsky giving a conference talk

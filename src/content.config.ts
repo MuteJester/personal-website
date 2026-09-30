@@ -22,6 +22,7 @@ const profile = defineCollection({
       orcid: link.optional(),
       linkedin: link.optional(),
     }),
+    profiles: z.array(link).default([]), // other profile pages, used only for the sameAs list in structured data
     seoTitle: z.string().optional(), // home page <title> and share title
     seoDescription: z.string().optional(), // home page search and share description
     portraitAlt: z.string(),
