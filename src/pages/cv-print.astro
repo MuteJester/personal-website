@@ -21,6 +21,11 @@ const patents = (await getCollection('patents')).sort(byDateDesc);
 const service = (await getCollection('service')).sort(byEndDesc);
 const pubs = await getCollection('publications');
 type Pub = (typeof pubs)[number];
+const pubById = new Map(pubs.map((p) => [p.id, p]));
+const software = (await getCollection('projects'))
+  .filter((p) => p.data.kind === 'research' && p.data.since)
+  .sort((a, b) => (b.data.since ?? 0) - (a.data.since ?? 0) || a.data.order - b.data.order);
+const short = (url: string) => url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
 const byYear = (a: Pub, b: Pub) => b.data.year - a.data.year || a.data.title.localeCompare(b.data.title);
 const leadAuthor = (p: Pub) => isLeadAuthor(p.data.authors, p.data.equalContribution, p.data.equalContributors, SELF);
 const published = pubs.filter((p) => p.data.status !== 'in-preparation');
@@ -29,6 +34,30 @@ const coauthored = published.filter((p) => !leadAuthor(p)).sort(byYear);
 const inPrep = pubs.filter((p) => p.data.status === 'in-preparation').sort(byYear);
 const typeLabel: Record<string, string> = { talk: 'Talk', 'short-talk': 'Short talk', lightning: 'Lightning talk', poster: 'Poster', demo: 'Demo', invited: 'Invited talk' };
 const talkWhen = (d: { date: Date; yearOnly: boolean }) => (d.yearOnly ? String(d.date.getUTCFullYear()) : formatMonthYear(d.date));
+// Identical titles presented at several venues collapse into one row listing the venues.
+type Talk = (typeof talks)[number];
+const talkGroups: Talk[][] = [];
+for (const t of talks) {
+  const g = talkGroups.find((g) => g[0].data.title === t.data.title);
+  if (g) g.push(t);
+  else talkGroups.push([t]);
+}
+const pluralLabel: Record<string, string> = { talk: 'Talks', 'short-talk': 'Short talks', lightning: 'Lightning talks', poster: 'Posters', demo: 'Demos', invited: 'Invited talks' };
+const venueList = (group: Talk[]) =>
+  Object.entries(
+    group.reduce<Record<string, string[]>>((acc, { data }) => {
+      const year = String(data.date.getUTCFullYear());
+      (acc[data.type] ??= []).push(data.event.includes(year) ? data.event : `${data.event} ${year}`);
+      return acc;
+    }, {}),
+  )
+    .map(([type, venues]) => `${pluralLabel[type]}: ${venues.join('; ')}.`)
+    .join(' ');
+const groupWhen = (group: Talk[]) => {
+  const years = group.map((t) => t.data.date.getUTCFullYear());
+  const lo = Math.min(...years), hi = Math.max(...years);
+  return lo === hi ? String(lo) : `${lo} – ${hi}`;
+};
 const { links, email } = profile.data;
 const today = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
@@ -108,6 +137,30 @@ const cite = (p: Pub) => {
       )}
     </section>
 
+    {software.length > 0 && (
+      <section>
+        <h2>Software</h2>
+        {software.map(({ data }) => {
+          const paper = data.paper ? pubById.get(data.paper) : undefined;
+          return (
+            <div class="row">
+              <div class="when">{data.since} – present</div>
+              <div class="what">
+                <p class="t">{data.name}<span class="sub"> · {data.tagline}</span></p>
+                <p class="d">{data.description}</p>
+                <p class="s">
+                  {paper && <><i>{paper.data.venue}</i>, {paper.data.year} · </>}
+                  <a href={data.repo}>{short(data.repo)}</a>
+                  {data.pypi && <> · PyPI: {data.pypi}</>}
+                  {data.app && <> · <a href={data.app}>{short(data.app)}</a></>}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </section>
+    )}
+
     <section>
       <h2>Patents</h2>
       {patents.map(({ data }) => (
@@ -143,15 +196,26 @@ const cite = (p: Pub) => {
 
     <section>
       <h2>Talks and posters</h2>
-      {talks.map(({ data }) => (
-        <div class="row">
-          <div class="when">{talkWhen(data)}</div>
-          <div class="what">
-            <p class="t">{data.title} <span class="tag">{typeLabel[data.type]}</span></p>
-            <p class="s">{data.event}{data.location ? `, ${data.location}` : ''}{data.coauthors.length > 0 ? ` · with ${data.coauthors.join(', ')}` : ''}</p>
+      {talkGroups.map((group) => {
+        const { data } = group[0];
+        return group.length === 1 ? (
+          <div class="row">
+            <div class="when">{talkWhen(data)}</div>
+            <div class="what">
+              <p class="t">{data.title} <span class="tag">{typeLabel[data.type]}</span></p>
+              <p class="s">{data.event}{data.location ? `, ${data.location}` : ''}{data.coauthors.length > 0 ? ` · with ${data.coauthors.join(', ')}` : ''}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        ) : (
+          <div class="row">
+            <div class="when">{groupWhen(group)}</div>
+            <div class="what">
+              <p class="t">{data.title}{data.coauthors.length > 0 && <span class="sub"> · with {data.coauthors.join(', ')}</span>}</p>
+              <p class="s">{venueList(group)}</p>
+            </div>
+          </div>
+        );
+      })}
     </section>
 
     <section>
@@ -194,23 +258,23 @@ const cite = (p: Pub) => {
 </html>
 
 <style is:global>
-  @page { size: A4; margin: 16mm 15mm 18mm; }
+  @page { size: A4; margin: 14mm 14mm 16mm; }
   html { font-size: 10pt; }
-  body { margin: 0; color: #111; background: #fff; font-family: 'Inter Variable', system-ui, sans-serif; line-height: 1.4; }
+  body { margin: 0; color: #111; background: #fff; font-family: 'Inter Variable', system-ui, sans-serif; line-height: 1.35; orphans: 3; widows: 3; }
   a { color: inherit; text-decoration: none; }
   .top { border-bottom: 1.5px solid #111; padding-bottom: 8pt; margin-bottom: 12pt; }
   h1 { font-family: 'Fraunces Variable', Georgia, serif; font-weight: 500; font-size: 24pt; line-height: 1.05; margin: 0 0 3pt; font-variation-settings: 'SOFT' 100, 'opsz' 72; }
   .role { margin: 0 0 3pt; font-size: 10.5pt; }
   .contact { margin: 0; font-size: 9pt; color: #444; }
-  section { margin-bottom: 11pt; break-inside: auto; }
-  section.pubs { break-before: page; }
-  h2 { font-family: 'Fraunces Variable', Georgia, serif; font-weight: 500; font-size: 12.5pt; margin: 0 0 5pt; padding-bottom: 2pt; border-bottom: 0.75px solid #999; break-after: avoid; font-variation-settings: 'SOFT' 100, 'opsz' 24; }
+  section { margin-bottom: 9pt; break-inside: auto; }
+  h2 { font-family: 'Fraunces Variable', Georgia, serif; font-weight: 500; font-size: 12.5pt; margin: 0 0 4pt; padding-bottom: 2pt; border-bottom: 0.75px solid #999; break-after: avoid; font-variation-settings: 'SOFT' 100, 'opsz' 24; }
   h3 { font-size: 9.5pt; font-weight: 600; margin: 6pt 0 3pt; color: #333; break-after: avoid; }
   .prose { margin: 0; }
   .note { margin: 0 0 3pt; font-size: 8.5pt; color: #555; }
-  .row { display: grid; grid-template-columns: 26mm minmax(0, 1fr); column-gap: 5mm; padding: 3pt 0; break-inside: avoid; }
+  .row { display: grid; grid-template-columns: 26mm minmax(0, 1fr); column-gap: 5mm; padding: 2.5pt 0; break-inside: avoid; }
   .when { font-size: 9pt; color: #444; padding-top: 1pt; }
   .t { margin: 0; font-weight: 600; }
+  .t .sub { font-weight: 400; color: #444; }
   .s { margin: 0; color: #444; font-size: 9.5pt; }
   .d { margin: 2pt 0 0; font-size: 9.5pt; }
   ul { margin: 2pt 0 0; padding-left: 12pt; font-size: 9.5pt; }

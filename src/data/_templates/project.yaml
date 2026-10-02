@@ -7,6 +7,7 @@ docs: https://example.org     # optional
 app: https://example.org      # optional
 paper: 2026-short-title       # optional publication id
 kind: research                # research (feature card) | tool (compact card)
+since: 2026                   # optional first release year; research tools with it appear on the CV
 plain: One sentence for non-specialists, shown on the home page.   # research only
 tags: [python]
 featured: false               # true to show on the home page
