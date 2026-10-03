@@ -74,7 +74,7 @@ const cite = (p: Pub) => {
   <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex, nofollow" />
-    <title>Thomas Konstantinovsky · CV</title>
+    <title>Thomas Konstantinovsky · Curriculum Vitae</title>
   </head>
   <body>
     <header class="top">
@@ -84,7 +84,7 @@ const cite = (p: Pub) => {
         <a href={`mailto:${email}`}>{email}</a> · <a href="https://thomaskon.com">thomaskon.com</a>
         {links.orcid && <> · ORCID <a href={links.orcid}>{links.orcid.replace('https://orcid.org/', '')}</a></>}
         {links.scholar && <> · <a href={links.scholar}>Google Scholar</a></>}
-        {links.github && <> · <a href={links.github}>GitHub</a></>}
+        {links.github && <> · <a href={links.github}>{short(links.github)}</a></>}
       </p>
     </header>
 

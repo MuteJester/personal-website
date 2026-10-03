@@ -1,7 +1,8 @@
 // Post-build: render dist/cv/ to a PDF with headless Chrome and save it next to the page.
 import { spawn, execFileSync } from 'node:child_process';
-import { existsSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { PDFDocument } from 'pdf-lib';
 
 const PORT = 4399;
 const OUT = resolve('dist/cv/thomas-konstantinovsky-cv.pdf');
@@ -23,6 +24,18 @@ async function waitFor(url, ms = 20000) {
   throw new Error(`preview server did not answer at ${url}`);
 }
 
+// Document properties shown by PDF viewers and indexed by search tools.
+async function setMetadata(path) {
+  const pdf = await PDFDocument.load(readFileSync(path));
+  pdf.setTitle('Thomas Konstantinovsky · Curriculum Vitae');
+  pdf.setAuthor('Thomas Konstantinovsky');
+  pdf.setSubject('Curriculum vitae');
+  pdf.setKeywords(['computational immunology', 'machine learning', 'AIRR-seq', 'bioinformatics', 'curriculum vitae']);
+  pdf.setProducer('thomaskon.com');
+  pdf.setCreator('thomaskon.com');
+  writeFileSync(path, await pdf.save());
+}
+
 const chrome = findChrome();
 if (!chrome) { console.warn('[cv-pdf] no Chrome found; skipping PDF generation'); process.exit(0); }
 if (!existsSync('dist/cv-print/index.html')) { console.warn('[cv-pdf] dist/cv-print/index.html missing; skipping'); process.exit(0); }
@@ -35,6 +48,7 @@ try {
     '--headless=new', '--disable-gpu', '--no-sandbox', '--hide-scrollbars', '--run-all-compositor-stages-before-draw',
     '--virtual-time-budget=4000', '--no-pdf-header-footer', `--print-to-pdf=${OUT}`, url,
   ], { stdio: 'ignore' });
+  await setMetadata(OUT);
   console.log(`[cv-pdf] wrote ${OUT} (${(statSync(OUT).size / 1024).toFixed(0)} KB)`);
 } finally {
   preview.kill('SIGTERM');
