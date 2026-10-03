@@ -63,7 +63,11 @@ const today = new Date().toLocaleDateString('en-US', { month: 'long', year: 'num
 
 const cite = (p: Pub) => {
   const authors = p.data.authors.map((a, i) => (a === SELF ? `<b>${a}</b>` : a) + (p.data.equalContribution && i < p.data.equalContributors ? '*' : '')).join(', ');
-  const id = p.data.doi ? `doi:${p.data.doi}` : p.data.arxiv ? `arXiv:${p.data.arxiv}` : '';
+  const id = p.data.doi
+    ? `<a href="https://doi.org/${p.data.doi}">doi:${p.data.doi}</a>`
+    : p.data.arxiv
+      ? `<a href="https://arxiv.org/abs/${p.data.arxiv}">arXiv:${p.data.arxiv}</a>`
+      : '';
   const status = p.data.status === 'preprint' ? ' (preprint)' : '';
   return `${authors}. ${p.data.title}. <i>${p.data.venue}</i>, ${p.data.year}${status}.${id ? ` ${id}` : ''}`;
 };
